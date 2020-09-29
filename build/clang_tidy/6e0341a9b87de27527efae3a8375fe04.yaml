@@ -1,0 +1,838 @@
+---
+MainSourceFile:  '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+Diagnostics:
+  - DiagnosticName:  llvm-include-order
+    DiagnosticMessage:
+      Message:         '#includes are not sorted properly'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      0
+      Replacements:    []
+    Notes:
+      - Message:         this fix will not be applied because it overlaps with another fix
+        FilePath:        ''
+        FileOffset:      0
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-restrict-system-libc-headers
+    DiagnosticMessage:
+      Message:         system include iostream not allowed
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      0
+      Replacements:
+        - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+          Offset:          0
+          Length:          20
+          ReplacementText: ''
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-restrict-system-libc-headers
+    DiagnosticMessage:
+      Message:         system include cassert not allowed
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      20
+      Replacements:
+        - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+          Offset:          20
+          Length:          19
+          ReplacementText: ''
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  google-build-using-namespace
+    DiagnosticMessage:
+      Message:         'do not use namespace using-directives; use using-declarations instead'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      78
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-implementation-in-namespace
+    DiagnosticMessage:
+      Message:         'declaration must be declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      94
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-implementation-in-namespace
+    DiagnosticMessage:
+      Message:         'declaration must be declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      104
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  modernize-use-trailing-return-type
+    DiagnosticMessage:
+      Message:         use a trailing return type for this function
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      104
+      Replacements:
+        - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+          Offset:          100
+          Length:          3
+          ReplacementText: auto
+        - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+          Offset:          120
+          Length:          0
+          ReplacementText: ' -> int'
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''move<my::sockets::detail::socket_t>'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      145
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/move.h'
+        FileOffset:      3060
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  fuchsia-default-arguments-calls
+    DiagnosticMessage:
+      Message:         calling a function that uses a default argument is disallowed
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      155
+      Replacements:    []
+    Notes:
+      - Message:         default parameter was declared here
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      12683
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''create_socket'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      155
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      12669
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''move<my::sockets::detail::socket_t &>'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      234
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/move.h'
+        FileOffset:      3060
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-pro-bounds-array-to-pointer-decay
+    DiagnosticMessage:
+      Message:         'do not implicitly decay an array into a pointer; consider using gsl::array_view or an explicit cast instead'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      260
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2859
+        Replacements:    []
+      - Message:         'expanded from macro ''__ASSERT_FUNCTION'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      4287
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''__assert_fail'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      260
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2817
+        Replacements:    []
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      1847
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-pro-bounds-array-to-pointer-decay
+    DiagnosticMessage:
+      Message:         'do not implicitly decay an array into a pointer; consider using gsl::array_view or an explicit cast instead'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      293
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2859
+        Replacements:    []
+      - Message:         'expanded from macro ''__ASSERT_FUNCTION'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      4287
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''__assert_fail'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      293
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2817
+        Replacements:    []
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      1847
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  bugprone-use-after-move
+    DiagnosticMessage:
+      Message:         '''test_sock'' used after it was moved'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      301
+      Replacements:    []
+    Notes:
+      - Message:         move occurred here
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      234
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  clang-analyzer-cplusplus.Move
+    DiagnosticMessage:
+      Message:         'Method called on moved-from object ''test_sock'''
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      301
+      Replacements:    []
+    Notes:
+      - Message:         'Calling ''test_low_level'''
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      2783
+        Replacements:    []
+      - Message:         'Object ''test_sock'' is moved'
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      234
+        Replacements:    []
+      - Message:         '''?'' condition is true'
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      260
+        Replacements:    []
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2751
+        Replacements:    []
+      - Message:         'Method called on moved-from object ''test_sock'''
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      301
+        Replacements:    []
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2771
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  fuchsia-default-arguments-calls
+    DiagnosticMessage:
+      Message:         calling a function that uses a default argument is disallowed
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      375
+      Replacements:    []
+    Notes:
+      - Message:         default parameter was declared here
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      15304
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''close_socket'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      375
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      15244
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-pro-bounds-array-to-pointer-decay
+    DiagnosticMessage:
+      Message:         'do not implicitly decay an array into a pointer; consider using gsl::array_view or an explicit cast instead'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      495
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2859
+        Replacements:    []
+      - Message:         'expanded from macro ''__ASSERT_FUNCTION'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      4287
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''__assert_fail'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      495
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2817
+        Replacements:    []
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      1847
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''operator=='' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      520
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      10060
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''operator='' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      567
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      9904
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''move<my::sockets::detail::socket_t>'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      569
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/bin/../lib/gcc/x86_64-linux-gnu/10/../../../../include/c++/10/bits/move.h'
+        FileOffset:      3060
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  fuchsia-default-arguments-calls
+    DiagnosticMessage:
+      Message:         calling a function that uses a default argument is disallowed
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      579
+      Replacements:    []
+    Notes:
+      - Message:         default parameter was declared here
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      12683
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''create_socket'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      579
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      12669
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  clang-analyzer-deadcode.DeadStores
+    DiagnosticMessage:
+      Message:         'Value stored to ''rv'' during its initialization is never read'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      777
+      Replacements:    []
+    Notes:
+      - Message:         'Value stored to ''rv'' during its initialization is never read'
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      777
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+    Ranges:
+      - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      777
+        Length:          0
+      - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      794
+        Length:          71
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''set_sock_opt<int>'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      794
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      11404
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-pro-bounds-array-to-pointer-decay
+    DiagnosticMessage:
+      Message:         'do not implicitly decay an array into a pointer; consider using gsl::array_view or an explicit cast instead'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      954
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2859
+        Replacements:    []
+      - Message:         'expanded from macro ''__ASSERT_FUNCTION'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      4287
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''__assert_fail'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      954
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2817
+        Replacements:    []
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      1847
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  clang-analyzer-deadcode.DeadStores
+    DiagnosticMessage:
+      Message:         'Value stored to ''rv'' during its initialization is never read'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1087
+      Replacements:    []
+    Notes:
+      - Message:         'Value stored to ''rv'' during its initialization is never read'
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      1087
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+    Ranges:
+      - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      1087
+        Length:          0
+      - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      1104
+        Length:          71
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''set_sock_opt<int>'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1104
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      11404
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-pro-bounds-array-to-pointer-decay
+    DiagnosticMessage:
+      Message:         'do not implicitly decay an array into a pointer; consider using gsl::array_view or an explicit cast instead'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1263
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2859
+        Replacements:    []
+      - Message:         'expanded from macro ''__ASSERT_FUNCTION'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      4287
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''__assert_fail'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1263
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2817
+        Replacements:    []
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      1847
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''get_sock_opt<int>'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1319
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      12022
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-pro-bounds-array-to-pointer-decay
+    DiagnosticMessage:
+      Message:         'do not implicitly decay an array into a pointer; consider using gsl::array_view or an explicit cast instead'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1399
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2859
+        Replacements:    []
+      - Message:         'expanded from macro ''__ASSERT_FUNCTION'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      4287
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''__assert_fail'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1399
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2817
+        Replacements:    []
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      1847
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-pro-bounds-array-to-pointer-decay
+    DiagnosticMessage:
+      Message:         'do not implicitly decay an array into a pointer; consider using gsl::array_view or an explicit cast instead'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1440
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2859
+        Replacements:    []
+      - Message:         'expanded from macro ''__ASSERT_FUNCTION'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      4287
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''__assert_fail'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1440
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2817
+        Replacements:    []
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      1847
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''destroy_socket<my::sockets::detail::socket_t>'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1463
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      8969
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-pro-bounds-array-to-pointer-decay
+    DiagnosticMessage:
+      Message:         'do not implicitly decay an array into a pointer; consider using gsl::array_view or an explicit cast instead'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1514
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2859
+        Replacements:    []
+      - Message:         'expanded from macro ''__ASSERT_FUNCTION'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      4287
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''__assert_fail'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1514
+      Replacements:    []
+    Notes:
+      - Message:         'expanded from macro ''assert'''
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      2817
+        Replacements:    []
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/include/assert.h'
+        FileOffset:      1847
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-special-member-functions
+    DiagnosticMessage:
+      Message:         'class ''socket_base'' defines a non-default destructor but does not define a copy constructor, a copy assignment operator, a move constructor or a move assignment operator'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1593
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-implementation-in-namespace
+    DiagnosticMessage:
+      Message:         'declaration must be declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      1593
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  modernize-use-trailing-return-type
+    DiagnosticMessage:
+      Message:         use a trailing return type for this function
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2245
+      Replacements:
+        - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+          Offset:          2241
+          Length:          3
+          ReplacementText: auto
+        - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+          Offset:          2254
+          Length:          0
+          ReplacementText: ' -> int'
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''operator!='' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2278
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      10205
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  fuchsia-default-arguments-calls
+    DiagnosticMessage:
+      Message:         calling a function that uses a default argument is disallowed
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2331
+      Replacements:    []
+    Notes:
+      - Message:         default parameter was declared here
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      11055
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''shutdown_socket'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2331
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/./include/my/my_sockets.hpp'
+        FileOffset:      11005
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  clang-analyzer-optin.cplusplus.VirtualCall
+    DiagnosticMessage:
+      Message:         'Call to virtual method ''socket_base::cleanup'' during destruction bypasses virtual dispatch'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2462
+      Replacements:    []
+    Notes:
+      - Message:         'Calling implicit destructor for ''mysock'''
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      2717
+        Replacements:    []
+      - Message:         'Calling ''~socket_base'''
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      2717
+        Replacements:    []
+      - Message:         'Call to virtual method ''socket_base::cleanup'' during destruction bypasses virtual dispatch'
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      2462
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  altera-struct-pack-align
+    DiagnosticMessage:
+      Message:         'accessing fields in struct ''mysock'' is inefficient due to poor alignment; currently aligned to 8 bytes, but recommended alignment is 0 bytes'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2486
+      Replacements:
+        - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+          Offset:          2637
+          Length:          0
+          ReplacementText: ' __attribute__((aligned(0)))'
+    Notes:
+      - Message:         'use "__attribute__((aligned(0)))" to align struct ''mysock'' to 0 bytes'
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      2486
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-implementation-in-namespace
+    DiagnosticMessage:
+      Message:         'declaration must be declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2486
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-implementation-in-namespace
+    DiagnosticMessage:
+      Message:         'declaration must be declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2644
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  cppcoreguidelines-avoid-magic-numbers
+    DiagnosticMessage:
+      Message:         '80 is a magic number; consider replacing it with a named constant'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2711
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''puts'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2724
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/usr/include/stdio.h'
+        FileOffset:      21696
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  bugprone-exception-escape
+    DiagnosticMessage:
+      Message:         'an exception may be thrown in function ''main'' which should not throw exceptions'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2770
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-implementation-in-namespace
+    DiagnosticMessage:
+      Message:         'declaration must be declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2770
+      Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  modernize-use-trailing-return-type
+    DiagnosticMessage:
+      Message:         use a trailing return type for this function
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2770
+      Replacements:
+        - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+          Offset:          2766
+          Length:          3
+          ReplacementText: auto
+        - FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+          Offset:          2776
+          Length:          0
+          ReplacementText: ' -> int'
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''test_low_level'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2783
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      104
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+  - DiagnosticName:  llvmlibc-callee-namespace
+    DiagnosticMessage:
+      Message:         '''test_user_level'' must resolve to a function declared within the ''__llvm_libc'' namespace'
+      FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+      FileOffset:      2805
+      Replacements:    []
+    Notes:
+      - Message:         resolves to this declaration
+        FilePath:        '/home/hp/Documents/VSCode/my_sockets/main.cpp'
+        FileOffset:      2644
+        Replacements:    []
+    Level:           Warning
+    BuildDirectory:  '/home/hp/Documents/VSCode/my_sockets/build'
+...
