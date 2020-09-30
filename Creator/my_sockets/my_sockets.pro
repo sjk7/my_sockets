@@ -5,7 +5,7 @@ CONFIG -= qt
 
 INCLUDEPATH += ../../my/include
 SOURCES += \
-        ../../main.cpp
+        ../../socktdd.cpp
 
 HEADERS += \
     ../../include/my/my_linux_sockets_includes.hpp \

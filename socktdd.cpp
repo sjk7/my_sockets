@@ -19,7 +19,7 @@ int test_low_level() {
     assert(raw_sock.handle() == my::sockets::invalid_socket);
 
     raw_sock = my::sockets::detail::raw_socket_helpers::create_socket();
-    auto opts = my::sockets::sock_properties{my::sockets::sock_properties::so_rcvtimeeo};
+    auto opts = my::sockets::sock_options{my::sockets::sock_options::so_rcvtimeeo};
     auto exceptions = 0;
 
     try {
@@ -34,7 +34,7 @@ int test_low_level() {
 
     assert(exceptions == 1);
     // expecting this one to succeed:
-    opts = my::sockets::sock_properties{my::sockets::sock_properties::so_reuseaddr};
+    opts = my::sockets::sock_options{my::sockets::sock_options::so_reuseaddr};
     try {
         auto rv = my::sockets::detail::raw_socket_helpers::set_sock_opt(
             raw_sock.handle(), 1, opts);
@@ -117,10 +117,14 @@ struct server : my::sockets::server_socket<server> {
         : server_base(host, port, reuse_address, backlog) {}
 
     void on_info(std::string_view info) { std::cerr << info << endl; }
+    void on_client_destroyed(const client_type& c){
+        cout << c << " destroyed" << endl;
+    }
 };
 
 int test_server(std::string_view local_ip, server::port_t port) {
     int ret = 0;
+    (void)ret;
     // try {
     server myserver(local_ip, port);
     cout << "myserver.active() == " << myserver.is_active() << endl;
@@ -137,13 +141,13 @@ int test_server(std::string_view local_ip, server::port_t port) {
             return 0;
         });
     /*/
-    ret = myserver.run(10);
+    ret = myserver.run();
     return ret;
 }
 int main() {
     using port_t = my::sockets::port_t;
     int ret = 0;
-
+    (void)ret;
     ret = test_server("", server::port_t{1234});
     assert(ret == 0);
 

@@ -15,13 +15,31 @@
 #endif
 
 namespace my {
+static constexpr const char* newline = "\r\n";
 
-template <typename... ARGS> static inline auto strbuild(ARGS... args) {
+template <typename... ARGS> static inline std::string strbuild(ARGS... args) {
     std::stringstream ss;
-    (ss << ... << args);
+
+    const char* sep = "";
+    (((ss << sep << args), sep = " "), ...);
     return std::string(ss.str());
 }
+
 namespace sockets {
+    [[maybe_unused]] static inline void set_last_error(
+        int err = 0, bool for_sockets = true) {
+        if (for_sockets) {
+#ifdef __unix
+            errno = err;
+#else
+            if (for_sockets) {
+                WSASetLastError(err);
+            } else {
+                SetLastError(err);
+            }
+#endif
+        }
+    }
 #ifdef _WIN32
     std::string platform_error_str_(int e) {
         DWORD error = e;
@@ -49,10 +67,10 @@ namespace sockets {
         return (int)GetLastError();
     }
 #else
-    int platform_error(bool = true) { return errno; }
+    static inline int platform_error(bool = true) { return errno; }
 #endif
 
-    std::string platform_error_string(int e = platform_error()) {
+    static inline std::string platform_error_string(int e = platform_error()) {
 #ifdef _WIN32
         return platform_error_str_(e);
 #else
@@ -60,7 +78,7 @@ namespace sockets {
 #endif
     }
 
-    static inline std::string error_string(int e = 0) {
+    [[maybe_unused]] static inline std::string error_string(int e = 0) {
         if (e == 0) e = platform_error();
         return strbuild("Error code: ", e, " ", platform_error_string(e));
     }
@@ -78,14 +96,15 @@ namespace sockets {
             static_assert(std::is_same_v<ERRCODE, int>,
                 "first arg to sock_exception should be the socket error code");
 
-            std::cerr << m_what << std::endl;
+            perror(m_what.c_str());
         }
 
         virtual const char* what() const noexcept { return m_what.c_str(); }
         int errcode() const noexcept { return m_errcode; }
     };
 
-    bool error_can_continue(int& e, bool is_connecting = false) {
+    [[maybe_unused]] static inline bool error_can_continue(
+        int& e, bool is_connecting = false) {
         e = platform_error();
         if (e == 0) return true;
 #ifdef _WIN32
@@ -107,5 +126,15 @@ namespace sockets {
 #endif
         return false;
     }
+
+    template <typename... ARGS> static inline void throw_sock_exception(ARGS... args) {
+        sock_exception e{platform_error(), "Error number: ", platform_error(), ":",
+            platform_error_string(), std::forward<ARGS>(args)...};
+        throw e;
+    }
+
+#ifndef THROW_SOCK_EXCEPTION
+#define THROW_SOCK_EXCEPTION(arg, ...) throw_sock_exception(arg, ##__VA_ARGS__)
+#endif
 } // namespace sockets
 } // namespace my

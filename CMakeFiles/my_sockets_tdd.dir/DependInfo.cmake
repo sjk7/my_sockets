@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/hp/Documents/VSCode/my_sockets/main.cpp" "/home/hp/Documents/VSCode/my_sockets/CMakeFiles/my_sockets_tdd.dir/main.cpp.o"
+  "/home/hp/Documents/VSCode/my_sockets/socktdd.cpp" "/home/hp/Documents/VSCode/my_sockets/CMakeFiles/my_sockets_tdd.dir/socktdd.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

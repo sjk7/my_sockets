@@ -19,10 +19,17 @@ namespace my {
 
 namespace timing {
     template <typename T, typename Rep, typename Period>
-    T duration_cast(const std::chrono::duration<Rep, Period>& duration) {
+    static inline T duration_cast(const std::chrono::duration<Rep, Period>& duration) {
         return duration.count() * static_cast<T>(Period::num)
             / static_cast<T>(Period::den);
     }
+
+    [[maybe_unused]] static inline auto ms_since_epoch() {
+        auto ret = std::chrono::steady_clock::now().time_since_epoch()
+            / std::chrono::milliseconds(1);
+        return ret;
+    }
+
     template <typename Clock = std::chrono::steady_clock> class stopwatch {
         typename Clock::time_point last_;
 

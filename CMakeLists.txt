@@ -8,7 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(CTest)
 enable_testing()
 
-add_executable(my_sockets_tdd main.cpp)
+add_executable(my_sockets_tdd socktdd.cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

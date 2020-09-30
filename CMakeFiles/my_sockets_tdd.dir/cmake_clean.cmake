@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/my_sockets_tdd.dir/main.cpp.o"
+  "CMakeFiles/my_sockets_tdd.dir/socktdd.cpp.o"
   "my_sockets_tdd"
   "my_sockets_tdd.pdb"
 )

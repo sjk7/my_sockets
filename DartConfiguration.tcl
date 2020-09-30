@@ -26,7 +26,7 @@ SubmitURL: http://
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "/usr/local/bin/cmake" "/home/hp/Documents/VSCode/my_sockets"
+ConfigureCommand: "/home/hp/Downloads/clion-2020.2.3/bin/cmake/linux/bin/cmake" "/home/hp/Documents/VSCode/my_sockets"
 MakeCommand: /usr/local/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}" -- -i
 DefaultCTestConfigurationType: Release
 
@@ -69,6 +69,8 @@ CompilerVersion: 10.1.0
 PurifyCommand: 
 ValgrindCommand: 
 ValgrindCommandOptions: 
+DrMemoryCommand: 
+DrMemoryCommandOptions: 
 MemoryCheckType: 
 MemoryCheckSanitizerOptions: 
 MemoryCheckCommand: /usr/bin/valgrind

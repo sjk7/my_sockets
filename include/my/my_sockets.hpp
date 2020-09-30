@@ -15,6 +15,7 @@
 #include <vector>
 #include <thread>
 #include <iostream>
+#include <unordered_map>
 
 #ifdef __unix
 #include "my_linux_sockets_includes.hpp"
@@ -111,45 +112,131 @@ namespace sockets {
         timeout_sec() : value(default_timeout){};
     };
 
-    enum class sock_properties {
-        so_invalid = 0,
+    enum class sock_options {
+        so_none = 0,
         so_debug = SO_DEBUG,
+        /*/
+        Indicates that the rules used in validating addresses supplied
+            in a bind(2) call should allow reuse of local addresses.
+        /*/
         so_reuseaddr = SO_REUSEADDR,
+        /*/
+              Gets the socket type as an integer (e.g., SOCK_STREAM).  This
+              socket option is read-only.
+/*/
         so_type = SO_TYPE,
         so_error = SO_ERROR,
         so_dontroute = SO_DONTROUTE,
         so_broadcast = SO_BROADCAST,
+        // Sets or gets the maximum socket send buffer in bytes.
         so_sndbuf = SO_SNDBUF,
+        // Sets or gets the maximum socket receive buffer in bytes.
         so_recvbuf = SO_RCVBUF,
 #ifdef __unix
+        /*/
+        Using this socket option, a privileged (CAP_NET_ADMIN) process
+            can perform the same task as SO_RCVBUF, but the rmem_max limit
+            can be overridden.
+        /*/
         so_sndbuffforce = SO_SNDBUFFORCE,
+        /*/
+        Using this socket option, a privileged (CAP_NET_ADMIN) process
+            can perform the same task as SO_SNDBUF, but the rmem_max limit
+            can be overridden.
+        /*/
         so_recvbufforce = SO_RCVBUFFORCE,
 #endif
+        /*/
+        int flags =1;
+        if (setsockopt(sfd, SOL_SOCKET, SO_KEEPALIVE, (void *)&flags, sizeof(flags))) {
+        perror("ERROR: setsocketopt(), SO_KEEPALIVE"); exit(0); }; on the server side, and
+        read() will be unblocked when the client is down. See:
+        https://holmeshe.me/network-essentials-setsockopt-SO_KEEPALIVE/
+        /*/
         so_keepalive = SO_KEEPALIVE,
+        /*/
+         * If this option is set, out-of-band data received on the socket is placed in the
+         normal input queue. This permits it to be read using read or recv without
+         specifying the MSG_OOB flag.
+         /*/
         so_oobinline = SO_OOBINLINE,
 #ifdef __unix
+        // disable UDP checksums on packets
         so_no_check = SO_NO_CHECK,
         so_priority = SO_PRIORITY,
 #endif
         so_linger = SO_LINGER,
 #ifdef __unix
         so_bsdcompar = SO_BSDCOMPAT,
+        // Permits multiple AF_INET or AF_INET6 sockets to be bound to an
+        // identical socket address.
         so_reuseport = SO_REUSEPORT,
         so_passcred = SO_PASSCRED,
         so_peercred = SO_PEERCRED,
 #endif
         so_rcvlowlat = SO_RCVLOWAT,
         so_sndlowlat = SO_SNDLOWAT,
+        // Care! In linux, optval is of type struct timeval,
+        // but in 'doze it's just a DWORD of millisecs.
         so_rcvtimeeo = SO_RCVTIMEO,
         so_sndtimeeo = SO_SNDTIMEO
     };
+
+    static inline std::unordered_map<int, std::string> sock_options_map;
+    static inline void build_sock_options_map() {
+        if (sock_options_map.empty()) {
+            auto& m = sock_options_map;
+            m[(int)sock_options::so_broadcast] = "SO_BROADCAST";
+            m[(int)sock_options::so_bsdcompar] = "SO_BSDCOMPAR";
+            m[(int)sock_options::so_debug] = "SO_DEBUG";
+            m[(int)sock_options::so_dontroute] = "SO_DONTROUTE";
+            m[(int)sock_options::so_error] = "SO_ERROR";
+            m[(int)sock_options::so_none] = "NONE";
+            m[(int)sock_options::so_keepalive] = "SO_KEEPALIVE";
+            m[(int)sock_options::so_linger] = "SO_LINGER";
+            m[(int)sock_options::so_no_check] = "SO_NO_CHECK";
+            m[(int)sock_options::so_oobinline] = "SO_OOBINLINE";
+            m[(int)sock_options::so_passcred] = "SO_PASSCRED";
+            m[(int)sock_options::so_peercred] = "SO_PEERCRED";
+            m[(int)sock_options::so_priority] = "SO_PRIORITY";
+            m[(int)sock_options::so_rcvlowlat] = "SO_RCVLOWLAT";
+            m[(int)sock_options::so_rcvtimeeo] = "SO_RCVTIMEEO";
+            m[(int)sock_options::so_recvbuf] = "SO_RECVBUF";
+            m[(int)sock_options::so_recvbufforce] = "SO_RECVBUFFFORCE";
+            m[(int)sock_options::so_reuseaddr] = "SO_REUSEADDR";
+            m[(int)sock_options::so_reuseport] = "SO_REUSEPORT";
+            m[(int)sock_options::so_sndbuf] = "SO_SNDBUF";
+            m[(int)sock_options::so_sndbuffforce] = "SO_SNDBUFFFORCE";
+            m[(int)sock_options::so_sndlowlat] = "SO_SNDLOWLAT";
+            m[(int)sock_options::so_sndtimeeo] = "SO_SNDTIMEEO";
+            m[(int)sock_options::so_type] = "SO_TYPE";
+        }
+    }
+
+    [[maybe_unused]] static inline std::ostream& operator<<(
+        std::ostream& os, const sock_options& sp) {
+        if (sock_options_map.empty()) {
+            build_sock_options_map();
+        }
+
+        const auto found = sock_options_map.find((int)sp);
+        if (found == sock_options_map.cend()) {
+            os << "Unknown socket option";
+        } else {
+            const auto& pr = found;
+            std::string_view sv = pr->second;
+            os << sv;
+        }
+
+        return os;
+    }
 
     namespace detail {
         namespace raw_socket_helpers {
 
             template <typename T>
             inline auto set_sock_opt(
-                const raw_socket_handle h, const T optval, sock_properties optname) {
+                const raw_socket_handle h, const T optval, sock_options optname) {
 
                 assert(h != invalid_fd);
                 const auto opt = static_cast<int>(optname);
@@ -157,16 +244,15 @@ namespace sockets {
                 //'doze requires optval as char*
                 auto ret = setsockopt(h, SOL_SOCKET, opt, (const char*)&optval, len);
                 if (ret != no_error) {
-                    throw sock_exception(platform_error(),
-                        platform_error_string(platform_error()),
-                        " set_sock_opt failed.\r\n", sockets::error_string());
+                    THROW_SOCK_EXCEPTION("set_sock_opt failed: for handle:", h,
+                        ",and optname ", optname, my::newline);
                 }
                 return ret;
             }
 
             template <typename T>
             inline auto get_sock_opt(
-                const raw_socket_handle sock, T& what, sock_properties optname) {
+                const raw_socket_handle sock, T& what, sock_options optname) {
 
                 assert(sock != invalid_fd);
                 auto len = (socklen_t)sizeof(what);
@@ -175,10 +261,7 @@ namespace sockets {
                     = ::getsockopt(sock, SOL_SOCKET, (int)optname, (char*)&what, &len);
                 assert(ret == no_error);
                 if (ret != no_error) {
-                    throw my::sockets::sock_exception(platform_error(),
-                        "get_sock_opt failed. Error code:",
-                        sockets::platform_error_string(platform_error()), "\r\n",
-                        sockets::error_string());
+                    THROW_SOCK_EXCEPTION("get_sock_opt");
                 }
                 return ret;
             }
@@ -249,7 +332,7 @@ namespace sockets {
                 : m_host(host), m_port(port) {
                 auto ret = build(host, port, family);
                 if (ret) {
-                    throw sockets::sock_exception(ret, "endpoint constructor failed.");
+                    THROW_SOCK_EXCEPTION(ret, "Endpoint construction failed");
                 }
             }
 
@@ -277,8 +360,9 @@ namespace sockets {
                 auto sport = strport.c_str();
                 int ret = ::getaddrinfo(host.data(), sport, &hints, &list);
                 if (ret) {
-                    throw sockets::sock_exception(
-                        ret, error_string(ret, m_host, ":", m_port.value));
+                    m_addrinfo.reset();
+                    THROW_SOCK_EXCEPTION(ret, "[getaddrinfo failed]", my::newline,
+                        error_string(ret, m_host, ":", m_port.value));
                 }
                 m_addrinfo.reset(list);
                 enumerate();
@@ -356,8 +440,8 @@ namespace sockets {
                             hints.ai_flags |= AI_NUMERICHOST;
 
                         } else {
-                            throw sockets::sock_exception(-2, "Address ", saddr,
-                                " is neither a valid ipv6 or ipv4 address", "");
+                            THROW_SOCK_EXCEPTION(-2, "Address ", saddr,
+                                " is neither a valid ipv6 or ipv4 address", my::newline);
                         }
                     }
 
@@ -479,8 +563,8 @@ namespace sockets {
                 if (ret == 0) {
                     m_blocking = want_blocking;
                 } else {
-                    throw sock_exception(platform_error(), " make_blocking(",
-                        want_blocking, ") failed.", platform_error_string);
+                    THROW_SOCK_EXCEPTION(
+                        "make_blocking(", want_blocking, ") failed.", my::newline);
                 }
                 assert(m_fd != 1);
                 return ret;
@@ -529,10 +613,9 @@ namespace sockets {
             if (reuse_address) {
                 opt = 1;
             }
-            sock_properties props{sock_properties::so_reuseaddr};
+            sock_options props{sock_options::so_reuseaddr};
 
             if (reuse_address) {
-                // again, throws on error
                 raw_socket_helpers::set_sock_opt(server.handle(), &opt, props);
             }
             return;
@@ -557,8 +640,8 @@ namespace sockets {
             const int ret
                 = ::bind(server.handle(), ai->ai_addr, static_cast<socklen_t>(sz));
             if (ret != no_error) {
-                throw sock_exception(platform_error(), " Bind, for host: ", server.host(),
-                    ":", server.port().value, platform_error_string());
+                THROW_SOCK_EXCEPTION("Bind, for host failed: ", server.host(), ":",
+                    server.port().value, my::newline);
             }
             return ret;
         }
@@ -568,8 +651,8 @@ namespace sockets {
 
             int ret = ::listen(srv.handle(), blog.value);
             if (ret != no_error) {
-                throw sock_exception(platform_error(),
-                    "listen faled for host: ", srv.host(), ":", srv.port().value);
+                THROW_SOCK_EXCEPTION(
+                    "listen failed for host: ", srv.host(), ":", srv.port().value);
             }
 
             return ret;
@@ -604,8 +687,7 @@ namespace sockets {
 
                 auto sck = ::socket((int)domain, (int)type, (int)protocol);
                 if (sck == invalid_fd) {
-                    throw sock_exception(platform_error(),
-                        " create_socket failed: ", platform_error_string());
+                    THROW_SOCK_EXCEPTION("Create_native socket failed: ");
                 }
 
                 return sck;
@@ -618,10 +700,17 @@ namespace sockets {
 
                 auto sck = ::socket((int)domain, (int)type, (int)protocol);
                 if (sck == invalid_fd) {
-                    throw sock_exception(platform_error(),
-                        " create_socket failed: ", platform_error_string());
+                    THROW_SOCK_EXCEPTION(
+                        "Create_socket failed: ", platform_error_string());
                 }
-                socket_t retval{sck, bt};
+                socket_t retval;
+                try {
+                    socket_t socket{sck, bt};
+                    retval = std::move(socket);
+                } catch (const sock_exception& e) {
+                    THROW_SOCK_EXCEPTION("Create_socket failed: ", e.what());
+                }
+
                 return retval;
             }
         } // namespace raw_socket_helpers
@@ -649,15 +738,15 @@ aborted and any pending data is immediately discarded upon close(2).
 
             l.l_linger = linger_secs.value;
             return raw_socket_helpers::set_sock_opt(sock.handle(), l,
-                my::sockets::sock_properties{my::sockets::sock_properties::so_linger});
+                my::sockets::sock_options{my::sockets::sock_options::so_linger});
         }
 
         inline static auto set_sock_no_linger(socket_t& sock) {
             struct linger l = {};
             l.l_onoff = 1;
             l.l_linger = 0;
-            return raw_socket_helpers::set_sock_opt(sock.handle(), l,
-                sock_properties{my::sockets::sock_properties::so_linger});
+            return raw_socket_helpers::set_sock_opt(
+                sock.handle(), l, sock_options{my::sockets::sock_options::so_linger});
         }
 
         /*/
@@ -670,7 +759,7 @@ aborted and any pending data is immediately discarded upon close(2).
             l.l_onoff = 0;
             l.l_linger = 0;
             return raw_socket_helpers::set_sock_opt(
-                sock.handle(), l, sock_properties{sock_properties::so_linger});
+                sock.handle(), l, sock_options{sock_options::so_linger});
         }
         // always closes socket, and does not throw so you can safely
         // use this in destructors.
@@ -1049,14 +1138,13 @@ aborted and any pending data is immediately discarded upon close(2).
 
                 detail::close_socket(*this, close_flags{});
                 if (e == ETIMEDOUT) {
-                    throw sock_exception(e, "connect to ", this->m_addrinfo.host(), ":",
-                        this->m_addrinfo.port().value,
-                        " failed: ", sockets::platform_error_string(e), " after ",
-                        sw.elapsed_ms().count(), " ms.");
+                    THROW_SOCK_EXCEPTION("Connect to ", this->m_addrinfo.host(), ":",
+                        this->m_addrinfo.port().value, " TIMED OUT: ", " after ",
+                        sw.elapsed_ms().count(), " ms.", my::newline);
                 } else {
-                    throw sock_exception(e, "connect to ", this->m_addrinfo.host(), ":",
-                        this->m_addrinfo.port().value,
-                        " failed: ", sockets::platform_error_string(e));
+                    THROW_SOCK_EXCEPTION("Connect to ", this->m_addrinfo.host(), ":",
+                        this->m_addrinfo.port().value, " failed: ", " after ",
+                        sw.elapsed_ms().count(), " ms.", my::newline);
                 }
             }
             if (ret == no_error) {
@@ -1096,7 +1184,7 @@ aborted and any pending data is immediately discarded upon close(2).
             assert(!m_peer_info.ip.empty());
             assert(m_peer_info.port.value > 0);
         }
-        ~server_client_socket() override { m_server.advise_client_gone(*this); }
+        ~server_client_socket() override { m_server.advise_client_destroyed(*this); }
 
         const peer_info_t& peer_info() const { return this->m_peer_info; }
 
@@ -1114,6 +1202,7 @@ aborted and any pending data is immediately discarded upon close(2).
         public:
         using MYTYPE = server_socket<CRTP>;
         using client_type = server_client_socket<MYTYPE>;
+        friend class server_client_socket<MYTYPE>;
         std::vector<client_type> m_vec_clients;
 
         server_socket(std::string_view host, port_t port, bool reuse_address = true,
@@ -1140,7 +1229,9 @@ aborted and any pending data is immediately discarded upon close(2).
             this->m_reuse_address = reuse_address;
             const ENDPOINT_TYPE& w = this->m_addrinfo;
             if (!w) {
-                throw sock_exception(-1, "no endpoint when listen called");
+                set_last_error(0); // because this cock-up has nothing
+                // to do with any platform error.
+                THROW_SOCK_EXCEPTION("No endpoint when listen called.", my::newline);
             }
 
             // throws if error, and sets the socket to reuse if required:
@@ -1157,29 +1248,30 @@ aborted and any pending data is immediately discarded upon close(2).
 
         CRTP& derived() { return static_cast<CRTP&>(*this); }
 
-        template <typename CB, typename CB2>
-        int run(unsigned int max_clients, CB on_idle, CB2 on_new_client) {
+        template <typename CB, typename CB2> int run(CB&& on_idle, CB2&& on_new_client) {
 
-            m_tid = std::this_thread::get_id();
-            const int ret = poll(
-                max_clients, std::forward<CB>(on_idle), std::forward<CB2>(on_new_client));
-            return ret;
-        }
-
-        int run(unsigned int max_clients) {
             m_tid = std::this_thread::get_id();
             const int ret
-                = poll(max_clients, [&]() { return 0; }, [&](auto) { return 0; });
+                = poll(std::forward<CB>(on_idle), std::forward<CB2>(on_new_client));
             return ret;
         }
 
-        void advise_client_gone(const client_type&) {
-            // remove him from your client list, or whatever ...
-            // NOTE: a multi-threaded server could call this on any old thread.
-            // So, if you have a client list, it should be thread safe.
+        int run() {
+            m_tid = std::this_thread::get_id();
+            const int ret = poll([&]() { return 0; },
+                [&](auto c) { return derived().on_client_connected(c); });
+            return ret;
         }
 
         protected:
+        int on_client_connected(client_type& c) {
+            std::cout << "client connected: " << c << std::endl;
+            return no_error;
+        }
+
+        void advise_client_destroyed(const client_type& c) {
+            derived().on_client_destroyed(c);
+        }
         int bind() { return detail::bind(*this); }
         static inline uint32_t uid_next() {
             static uint32_t u;
@@ -1234,8 +1326,58 @@ aborted and any pending data is immediately discarded upon close(2).
 
 #endif
 
-        template <typename CB, typename CB2>
-        int poll(int max_listeners, CB on_idle, CB2 on_new_client) {
+#ifdef __unix
+
+        template <typename ON_NEW_CLIENT_CALLBACK>
+        int process_events(ON_NEW_CLIENT_CALLBACK on_new_client,
+            struct epoll_event* events, const int nevents) {
+
+            int retval = no_error;
+            int sfd = this->handle();
+
+            for (int i = 0; i < nevents; i++) {
+                auto efd = events[i].data.fd;
+                if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP)
+                    || (!(events[i].events & EPOLLIN))) {
+                    /* An error has occured on this fd, or the socket is not
+                           ready for reading. */
+                    fprintf(stderr, "epoll error\n");
+                    close(events[i].data.fd);
+                    continue;
+                }
+
+                else if (sfd == efd) {
+                    /* We have a notification on the listening socket, which
+                           means one or more incoming connections. */
+                    while (1) {
+                        struct sockaddr in_addr {};
+                        socklen_t in_len = sizeof(in_addr);
+                        raw_socket_handle s = ::accept(sfd, &in_addr, &in_len);
+                        if (s == invalid_sock_handle) {
+                            const auto e = errno;
+                            if ((e == EAGAIN) || (e == EWOULDBLOCK)) {
+                                /* We have processed all incoming
+                                       connections. */
+                                break;
+                            }
+                        } else {
+                            retval = on_new_client(
+                                server_client_socket(*this, s, in_addr, uid_next()));
+
+                            if (retval < 0) {
+                                return retval;
+                            }
+                        }
+                    }
+                    continue;
+                }
+            }
+            return retval;
+        }
+
+#endif
+
+        template <typename CB, typename CB2> int poll(CB on_idle, CB2 on_new_client) {
 #ifdef _WIN32
             return win32_poll_(max_listeners, 50, std::forward<CB>(on_idle),
                 std::forward<CB2>(on_new_client));
@@ -1243,21 +1385,20 @@ aborted and any pending data is immediately discarded upon close(2).
             int retval = 0;
             auto efd = epoll_create1(0);
             if (efd == -1) {
-                perror("epoll_create");
-                abort();
+                throw_sock_exception("epoll_create1 failed");
             }
-            int sfd = this->handle();
+
             struct epoll_event event {};
             struct epoll_event* events{nullptr};
-
-            event.data.fd = sfd;
+            event.data.fd = this->handle();
             event.events = EPOLLIN | EPOLLET;
-            const auto s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
+            const auto s = epoll_ctl(efd, EPOLL_CTL_ADD, this->handle(), &event);
             if (s == -1) {
                 perror("epoll_ctl");
-                abort();
+                throw_sock_exception("epoll_ctl failed");
             }
 
+            const auto max_listeners = 1; // just get one at a time
             /* Buffer where events are returned */
             events = (epoll_event*)calloc(max_listeners, sizeof event);
 
@@ -1282,41 +1423,8 @@ aborted and any pending data is immediately discarded upon close(2).
                             "NOTE: epoll_wait returned ", n, platform_error_string()));
                 }
 
-                int i = 0;
-                for (i = 0; i < n; i++) {
-                    auto efd = events[i].data.fd;
-                    if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP)
-                        || (!(events[i].events & EPOLLIN))) {
-                        /* An error has occured on this fd, or the socket is not
-                           ready for reading. */
-                        fprintf(stderr, "epoll error\n");
-                        close(events[i].data.fd);
-                        continue;
-                    }
-
-                    else if (sfd == efd) {
-                        /* We have a notification on the listening socket, which
-                           means one or more incoming connections. */
-                        while (1) {
-                            struct sockaddr in_addr {};
-                            socklen_t in_len = sizeof(in_addr);
-                            raw_socket_handle s = ::accept(sfd, &in_addr, &in_len);
-                            if (s != invalid_sock_handle) {
-                                if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
-                                    /* We have processed all incoming
-                                       connections. */
-                                    break;
-                                }
-                            }
-                            retval = on_new_client(
-                                server_client_socket(*this, s, in_addr, uid_next()));
-
-                            if (retval < 0) {
-                                goto done;
-                            }
-                        }
-                        continue;
-                    }
+                if (process_events(on_new_client, events, n) < 0) {
+                    goto done;
                 }
             }
         done:

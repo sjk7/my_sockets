@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.13.82, 2020-09-30T02:30:32. -->
+<!-- Written by QtCreator 4.13.82, 2020-09-30T07:19:52. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -79,23 +79,7 @@
      <value type="QString">/home/hp/Documents/VSCode/my_sockets/Creator/my_sockets/my_sockets.pro</value>
     </valuelist>
     <valuelist type="QVariantList" key="ClangTools.SelectedFiles"/>
-    <valuelist type="QVariantList" key="ClangTools.SuppressedDiagnostics">
-     <valuemap type="QVariantMap">
-      <value type="QString" key="ClangTools.SuppressedDiagnosticFilePath">/home/hp/Documents/VSCode/my_sockets/main.cpp</value>
-      <value type="QString" key="ClangTools.SuppressedDiagnosticMessage">do not implicitly decay an array into a pointer; consider using gsl::array_view or an explicit cast instead [cppcoreguidelines-pro-bounds-array-to-pointer-decay]</value>
-      <value type="int" key="ClangTools.SuppressedDiagnosticUniquifier">0</value>
-     </valuemap>
-     <valuemap type="QVariantMap">
-      <value type="QString" key="ClangTools.SuppressedDiagnosticFilePath">/home/hp/Documents/VSCode/my_sockets/main.cpp</value>
-      <value type="QString" key="ClangTools.SuppressedDiagnosticMessage">class 'basic_skt' defines a non-default destructor but does not define a copy constructor, a copy assignment operator, a move constructor or a move assignment operator [cppcoreguidelines-special-member-functions]</value>
-      <value type="int" key="ClangTools.SuppressedDiagnosticUniquifier">0</value>
-     </valuemap>
-     <valuemap type="QVariantMap">
-      <value type="QString" key="ClangTools.SuppressedDiagnosticFilePath">/home/hp/Documents/VSCode/my_sockets/main.cpp</value>
-      <value type="QString" key="ClangTools.SuppressedDiagnosticMessage">class 'basic_skt' defines a default destructor but does not define a copy constructor, a copy assignment operator, a move constructor or a move assignment operator [cppcoreguidelines-special-member-functions]</value>
-      <value type="int" key="ClangTools.SuppressedDiagnosticUniquifier">0</value>
-     </valuemap>
-    </valuelist>
+    <valuelist type="QVariantList" key="ClangTools.SuppressedDiagnostics"/>
     <value type="bool" key="ClangTools.UseGlobalSettings">true</value>
    </valuemap>
   </valuemap>
