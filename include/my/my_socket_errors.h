@@ -22,7 +22,8 @@ template <typename... ARGS> static inline std::string strbuild(ARGS... args) {
 
     const char* sep = "";
     (((ss << sep << args), sep = " "), ...);
-    return std::string(ss.str());
+    std::string out(ss.str());
+    return out;
 }
 
 namespace sockets {
@@ -79,8 +80,10 @@ namespace sockets {
     }
 
     [[maybe_unused]] static inline std::string error_string(int e = 0) {
-        if (e == 0) e = platform_error();
-        return strbuild("Error code: ", e, " ", platform_error_string(e));
+        if (e == 0) {
+            e = platform_error();
+        }
+        return strbuild("Error code:", e, platform_error_string(e));
     }
 
     class sock_exception : std::exception {
@@ -96,7 +99,7 @@ namespace sockets {
             static_assert(std::is_same_v<ERRCODE, int>,
                 "first arg to sock_exception should be the socket error code");
 
-            perror(m_what.c_str());
+            // perror(m_what.c_str());
         }
 
         virtual const char* what() const noexcept { return m_what.c_str(); }
@@ -130,6 +133,13 @@ namespace sockets {
     template <typename... ARGS> static inline void throw_sock_exception(ARGS... args) {
         sock_exception e{platform_error(), "Error number: ", platform_error(), ":",
             platform_error_string(), std::forward<ARGS>(args)...};
+        throw e;
+    }
+
+    template <typename... ARGS>
+    static inline void throw_sock_exception(int errcode, ARGS... args) {
+        sock_exception e{
+            errcode, "Error number: ", errcode, my::newline, std::forward<ARGS>(args)...};
         throw e;
     }
 

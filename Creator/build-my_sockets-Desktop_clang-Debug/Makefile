@@ -52,8 +52,8 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../../main.cpp 
-OBJECTS       = main.o
+SOURCES       = ../../socktdd.cpp 
+OBJECTS       = socktdd.o
 DIST          = /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/common/unix.conf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/common/linux.conf \
@@ -225,6 +225,7 @@ DIST          = /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/qt_config.prf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/linux-clang/qmake.conf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/spec_post.prf \
+		../my_sockets/.qmake.stash \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/toolchain.prf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/default_pre.prf \
@@ -241,7 +242,7 @@ DIST          = /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../my_sockets/my_sockets.pro ../../include/my/my_linux_sockets_includes.hpp \
 		../../include/my/my_socket_errors.h \
 		../../include/my/my_sockets.hpp \
-		../../include/my/my_sockets_utils.h ../../main.cpp
+		../../include/my/my_sockets_utils.h ../../socktdd.cpp
 QMAKE_TARGET  = my_sockets
 DESTDIR       = 
 TARGET        = my_sockets
@@ -424,6 +425,7 @@ Makefile: ../my_sockets/my_sockets.pro /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/l
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/qt_config.prf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/linux-clang/qmake.conf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/exclusive_builds.prf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/toolchain.prf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/default_pre.prf \
@@ -610,6 +612,7 @@ Makefile: ../my_sockets/my_sockets.pro /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/l
 /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/qt_config.prf:
 /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/linux-clang/qmake.conf:
 /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/exclusive_builds.prf:
 /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/toolchain.prf:
 /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/default_pre.prf:
@@ -667,11 +670,11 @@ compiler_clean:
 
 ####### Compile
 
-main.o: ../../main.cpp ../../include/my/my_sockets.hpp \
+socktdd.o: ../../socktdd.cpp ../../include/my/my_sockets.hpp \
 		../../include/my/my_socket_errors.h \
 		../../include/my/my_sockets_utils.h \
 		../../include/my/my_linux_sockets_includes.hpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o socktdd.o ../../socktdd.cpp
 
 ####### Install
 

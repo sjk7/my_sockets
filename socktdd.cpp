@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <cassert>
 #include "./include/my/my_sockets.hpp"
@@ -117,9 +118,15 @@ struct server : my::sockets::server_socket<server> {
         : server_base(host, port, reuse_address, backlog) {}
 
     void on_info(std::string_view info) { std::cerr << info << endl; }
-    void on_client_destroyed(const client_type& c){
-        cout << c << " destroyed" << endl;
+    int on_client_connected(client_type&&) {
+        static int ctr = 0;
+        ctr++;
+        if (ctr > 10) {
+            return -77;
+        }
+        return 0;
     }
+    void on_client_destroyed(const client_type& c) { cout << c << " destroyed" << endl; }
 };
 
 int test_server(std::string_view local_ip, server::port_t port) {
@@ -148,8 +155,6 @@ int main() {
     using port_t = my::sockets::port_t;
     int ret = 0;
     (void)ret;
-    ret = test_server("", server::port_t{1234});
-    assert(ret == 0);
 
     test_low_level();
     ret = test_basic_socket("google.com", port_t{80});

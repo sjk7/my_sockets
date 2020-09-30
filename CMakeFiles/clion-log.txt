@@ -1,0 +1,5 @@
+/home/hp/Downloads/clion-2020.2.3/bin/cmake/linux/bin/cmake -G "CodeBlocks - Unix Makefiles" /home/hp/Documents/VSCode/my_sockets
+-- Eclipse version is set to 3.6 (Helios). Adjust CMAKE_ECLIPSE_VERSION if this is wrong.
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/hp/Documents/VSCode/my_sockets

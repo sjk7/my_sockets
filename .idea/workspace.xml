@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="SPLITTER_PROPORTION" value="0.72569907" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="my_sockets_tdd" targetName="my_sockets_tdd" />
+      <config projectName="my_sockets_tdd" targetName="ExperimentalTest" />
+      <config projectName="my_sockets_tdd" targetName="NightlySubmit" />
+      <config projectName="my_sockets_tdd" targetName="Nightly" />
+      <config projectName="my_sockets_tdd" targetName="NightlyBuild" />
+      <config projectName="my_sockets_tdd" targetName="ExperimentalSubmit" />
+      <config projectName="my_sockets_tdd" targetName="ContinuousBuild" />
+      <config projectName="my_sockets_tdd" targetName="ContinuousStart" />
+      <config projectName="my_sockets_tdd" targetName="ExperimentalConfigure" />
+      <config projectName="my_sockets_tdd" targetName="ExperimentalUpdate" />
+      <config projectName="my_sockets_tdd" targetName="Continuous" />
+      <config projectName="my_sockets_tdd" targetName="ContinuousTest" />
+      <config projectName="my_sockets_tdd" targetName="ContinuousUpdate" />
+      <config projectName="my_sockets_tdd" targetName="NightlyTest" />
+      <config projectName="my_sockets_tdd" targetName="ExperimentalMemCheck" />
+      <config projectName="my_sockets_tdd" targetName="Experimental" />
+      <config projectName="my_sockets_tdd" targetName="ContinuousSubmit" />
+      <config projectName="my_sockets_tdd" targetName="NightlyConfigure" />
+      <config projectName="my_sockets_tdd" targetName="ContinuousConfigure" />
+      <config projectName="my_sockets_tdd" targetName="ExperimentalBuild" />
+      <config projectName="my_sockets_tdd" targetName="ExperimentalStart" />
+      <config projectName="my_sockets_tdd" targetName="ContinuousCoverage" />
+      <config projectName="my_sockets_tdd" targetName="NightlyCoverage" />
+      <config projectName="my_sockets_tdd" targetName="NightlyStart" />
+      <config projectName="my_sockets_tdd" targetName="NightlyMemCheck" />
+      <config projectName="my_sockets_tdd" targetName="NightlyUpdate" />
+      <config projectName="my_sockets_tdd" targetName="ExperimentalCoverage" />
+      <config projectName="my_sockets_tdd" targetName="ContinuousMemCheck" />
+      <config projectName="my_sockets_tdd" targetName="NightlyMemoryCheck" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Default" GENERATION_DIR="." />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f30c88a4-a2e6-4d62-b3a5-a1d315ece851" name="Default Changelist" comment="clion">
+      <change beforePath="$PROJECT_DIR$/include/my/my_sockets.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/my/my_sockets.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my_sockets_tdd" beforeDir="false" afterPath="$PROJECT_DIR$/my_sockets_tdd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/socktdd.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/socktdd.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Default" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1iDarSqvgK2jOQWnKX76lpTTW43" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.advertisement.text.has.clang-format" value="true" />
+    <property name="cf.advertisement.text.overridden" value="true" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="Errors" />
+  </component>
+  <component name="RunManager" selected="CMake Application.my_sockets_tdd">
+    <configuration name="Continuous" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="Continuous" CONFIG_NAME="Default">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ContinuousBuild" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ContinuousBuild" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ContinuousBuild">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ContinuousConfigure" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ContinuousConfigure" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ContinuousConfigure">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ContinuousCoverage" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ContinuousCoverage" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ContinuousCoverage">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ContinuousMemCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ContinuousMemCheck" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ContinuousMemCheck">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ContinuousStart" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ContinuousStart" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ContinuousStart">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ContinuousSubmit" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ContinuousSubmit" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ContinuousSubmit">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ContinuousTest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ContinuousTest" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ContinuousTest">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ContinuousUpdate" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ContinuousUpdate" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ContinuousUpdate">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Experimental" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="Experimental" CONFIG_NAME="Default">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExperimentalBuild" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ExperimentalBuild" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ExperimentalBuild">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExperimentalConfigure" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ExperimentalConfigure" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ExperimentalConfigure">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExperimentalCoverage" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ExperimentalCoverage" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ExperimentalCoverage">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExperimentalMemCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ExperimentalMemCheck" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ExperimentalMemCheck">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExperimentalStart" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ExperimentalStart" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ExperimentalStart">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExperimentalSubmit" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ExperimentalSubmit" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ExperimentalSubmit">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExperimentalTest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ExperimentalTest" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ExperimentalTest">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExperimentalUpdate" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="ExperimentalUpdate" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="ExperimentalUpdate">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Nightly" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="Nightly" CONFIG_NAME="Default">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NightlyBuild" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="NightlyBuild" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="NightlyBuild">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NightlyConfigure" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="NightlyConfigure" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="NightlyConfigure">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NightlyCoverage" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="NightlyCoverage" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="NightlyCoverage">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NightlyMemCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="NightlyMemCheck" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="NightlyMemCheck">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NightlyMemoryCheck" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="NightlyMemoryCheck" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="NightlyMemoryCheck">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NightlyStart" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="NightlyStart" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="NightlyStart">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NightlySubmit" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="NightlySubmit" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="NightlySubmit">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NightlyTest" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="NightlyTest" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="NightlyTest">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="NightlyUpdate" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="NightlyUpdate" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="NightlyUpdate">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="my_sockets_tdd" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="my_sockets_tdd" TARGET_NAME="my_sockets_tdd" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="my_sockets_tdd" RUN_TARGET_NAME="my_sockets_tdd">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.Continuous" />
+      <item itemvalue="CMake Application.ContinuousBuild" />
+      <item itemvalue="CMake Application.ContinuousConfigure" />
+      <item itemvalue="CMake Application.ContinuousCoverage" />
+      <item itemvalue="CMake Application.ContinuousMemCheck" />
+      <item itemvalue="CMake Application.ContinuousStart" />
+      <item itemvalue="CMake Application.ContinuousSubmit" />
+      <item itemvalue="CMake Application.ContinuousTest" />
+      <item itemvalue="CMake Application.ContinuousUpdate" />
+      <item itemvalue="CMake Application.Experimental" />
+      <item itemvalue="CMake Application.ExperimentalBuild" />
+      <item itemvalue="CMake Application.ExperimentalConfigure" />
+      <item itemvalue="CMake Application.ExperimentalCoverage" />
+      <item itemvalue="CMake Application.ExperimentalMemCheck" />
+      <item itemvalue="CMake Application.ExperimentalStart" />
+      <item itemvalue="CMake Application.ExperimentalSubmit" />
+      <item itemvalue="CMake Application.ExperimentalTest" />
+      <item itemvalue="CMake Application.ExperimentalUpdate" />
+      <item itemvalue="CMake Application.my_sockets_tdd" />
+      <item itemvalue="CMake Application.Nightly" />
+      <item itemvalue="CMake Application.NightlyBuild" />
+      <item itemvalue="CMake Application.NightlyConfigure" />
+      <item itemvalue="CMake Application.NightlyCoverage" />
+      <item itemvalue="CMake Application.NightlyMemCheck" />
+      <item itemvalue="CMake Application.NightlyMemoryCheck" />
+      <item itemvalue="CMake Application.NightlyStart" />
+      <item itemvalue="CMake Application.NightlySubmit" />
+      <item itemvalue="CMake Application.NightlyTest" />
+      <item itemvalue="CMake Application.NightlyUpdate" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f30c88a4-a2e6-4d62-b3a5-a1d315ece851" name="Default Changelist" comment="" />
+      <created>1601444815668</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1601444815668</updated>
+      <workItem from="1601444817317" duration="1503000" />
+      <workItem from="1601446332063" duration="242000" />
+      <workItem from="1601447073378" duration="6021000" />
+    </task>
+    <task id="LOCAL-00001" summary="clion">
+      <created>1601451325019</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1601451325019</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="clion" />
+    <option name="LAST_COMMIT_MESSAGE" value="clion" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="429" y="131" width="734" height="639" key="#Inspections" timestamp="1601455743105">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="429" y="131" width="734" height="639" key="#Inspections/0.0.1600.900@0.0.1600.900" timestamp="1601455743105" />
+    <state x="258" y="108" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1601446127780">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="258" y="108" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1600.900@0.0.1600.900" timestamp="1601446127780" />
+    <state x="518" y="255" width="555" height="392" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1601445950040">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="518" y="255" width="555" height="392" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1600.900@0.0.1600.900" timestamp="1601445950040" />
+    <state x="533" y="200" width="526" height="502" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1601445970832">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="533" y="200" width="526" height="502" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1600.900@0.0.1600.900" timestamp="1601445970832" />
+    <state x="545" y="308" width="502" height="286" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1601451566148">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="545" y="308" width="502" height="286" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1600.900@0.0.1600.900" timestamp="1601451566148" />
+    <state width="1558" height="282" key="GridCell.Tab.0.bottom" timestamp="1601456614135">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state width="1558" height="282" key="GridCell.Tab.0.bottom/0.0.1600.900@0.0.1600.900" timestamp="1601456614135" />
+    <state width="1558" height="282" key="GridCell.Tab.0.center" timestamp="1601456614134">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state width="1558" height="282" key="GridCell.Tab.0.center/0.0.1600.900@0.0.1600.900" timestamp="1601456614134" />
+    <state width="1558" height="282" key="GridCell.Tab.0.left" timestamp="1601456614133">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state width="1558" height="282" key="GridCell.Tab.0.left/0.0.1600.900@0.0.1600.900" timestamp="1601456614133" />
+    <state width="1558" height="282" key="GridCell.Tab.0.right" timestamp="1601456614135">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state width="1558" height="282" key="GridCell.Tab.0.right/0.0.1600.900@0.0.1600.900" timestamp="1601456614135" />
+    <state width="1558" height="282" key="GridCell.Tab.1.bottom" timestamp="1601456614137">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state width="1558" height="282" key="GridCell.Tab.1.bottom/0.0.1600.900@0.0.1600.900" timestamp="1601456614137" />
+    <state width="1558" height="282" key="GridCell.Tab.1.center" timestamp="1601456614136">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state width="1558" height="282" key="GridCell.Tab.1.center/0.0.1600.900@0.0.1600.900" timestamp="1601456614136" />
+    <state width="1558" height="282" key="GridCell.Tab.1.left" timestamp="1601456614136">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state width="1558" height="282" key="GridCell.Tab.1.left/0.0.1600.900@0.0.1600.900" timestamp="1601456614136" />
+    <state width="1558" height="282" key="GridCell.Tab.1.right" timestamp="1601456614137">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state width="1558" height="282" key="GridCell.Tab.1.right/0.0.1600.900@0.0.1600.900" timestamp="1601456614137" />
+    <state x="304" y="85" width="992" height="732" key="SettingsEditor" timestamp="1601455996016">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="304" y="85" width="992" height="732" key="SettingsEditor/0.0.1600.900@0.0.1600.900" timestamp="1601455996016" />
+    <state x="395" y="186" width="802" height="530" key="Vcs.Push.Dialog.v2" timestamp="1601451341350">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="395" y="186" width="802" height="530" key="Vcs.Push.Dialog.v2/0.0.1600.900@0.0.1600.900" timestamp="1601451341350" />
+    <state x="99" y="100" width="1402" height="700" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1601451024547">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="99" y="100" width="1402" height="700" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1600.900@0.0.1600.900" timestamp="1601451024547" />
+    <state x="522" y="237" width="548" height="423" key="refactoring.ChangeSignatureDialog" timestamp="1601452289213">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="522" y="237" width="548" height="423" key="refactoring.ChangeSignatureDialog/0.0.1600.900@0.0.1600.900" timestamp="1601452289213" />
+    <state x="463" y="194" width="672" height="678" key="search.everywhere.popup" timestamp="1601455230945">
+      <screen x="0" y="0" width="1600" height="900" />
+    </state>
+    <state x="463" y="194" width="672" height="678" key="search.everywhere.popup/0.0.1600.900@0.0.1600.900" timestamp="1601455230945" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/socktdd.cpp</url>
+          <line>126</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

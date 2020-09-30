@@ -1,0 +1,26 @@
+--- Begin Cleanup ---
+--- End Cleanup ---
+"/usr/bin/git" "rev-list" "-n" "1" "HEAD" "--"
+rl-out> 364d2109865ef121ddead867273f69541978f08a
+--- Begin Update ---
+"/usr/bin/git" "fetch"
+"/usr/bin/git" "rev-parse" "--git-dir"
+rev-parse-out> .git
+FETCH_HEAD> 364d2109865ef121ddead867273f69541978f08a		branch 'master' of https://github.com/sjk7/my_sockets
+"/usr/bin/git" "reset" "--hard" "364d2109865ef121ddead867273f69541978f08a"
+reset-out> HEAD is now at 364d210 mint
+"/usr/bin/git" "rev-parse" "--show-cdup"
+rev-parse-out> 
+"/usr/bin/git" "--version"
+version-out> git version 2.17.1
+"/usr/bin/git" "submodule" "sync" "--recursive"
+"/usr/bin/git" "submodule" "update" "--recursive"
+--- End Update ---
+"/usr/bin/git" "rev-list" "-n" "1" "HEAD" "--"
+rl-out> 364d2109865ef121ddead867273f69541978f08a
+--- Begin Revisions ---
+"/usr/bin/git" "rev-list" "--reverse" "364d2109865ef121ddead867273f69541978f08a..364d2109865ef121ddead867273f69541978f08a" "--" | "/usr/bin/git" "diff-tree" "--stdin" "--always" "-z" "-r" "--pretty=raw" "--encoding=utf-8"
+dt-out> 
+"/usr/bin/git" "update-index" "--refresh"
+"/usr/bin/git" "diff-index" "-z" "HEAD" "--"
+--- End Revisions ---

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Update mode="Client" Generator="ctest-3.17.3">
+	<Site>hp-lap</Site>
+	<BuildName>Linux-c++</BuildName>
+	<BuildStamp>20200930-0604-Continuous</BuildStamp>
+	<StartDateTime>Sep 30 07:04 BST</StartDateTime>
+	<StartTime>1601445845</StartTime>
+	<UpdateCommand>"/usr/bin/git" "fetch"</UpdateCommand>
+	<UpdateType>GIT</UpdateType>
+	<Revision>364d2109865ef121ddead867273f69541978f08a</Revision>
+	<EndDateTime>Sep 30 07:04 BST</EndDateTime>
+	<EndTime>1601445846</EndTime>
+	<ElapsedMinutes>0</ElapsedMinutes>
+	<UpdateReturnStatus/>
+</Update>
