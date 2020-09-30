@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/my_sockets_tdd.dir/main.cpp.o  -o my_sockets_tdd 

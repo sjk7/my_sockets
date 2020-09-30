@@ -66,7 +66,8 @@ class basic_skt : public my::sockets::connecting_socket<basic_skt> {
     basic_skt(std::string_view host, port_t port, timeout_ms timeout = timeout_ms{},
         blocking_mode bm = blocking_mode::non_blocking)
         : base_t(host, port, timeout, bm) {}
-    virtual ~basic_skt() {}
+
+    ~basic_skt() override = default;
 
     void on_connected() {
         cout << "basic_skt connected to: " << this->host() << ":" << this->port().value
@@ -128,19 +129,15 @@ int test_server(std::string_view local_ip, server::port_t port) {
              << myserver.port().value << endl;
     }
 
-    myserver.run(
-        10, [&](const auto&) { return 0; },
-        [&](const auto&, auto&& client) {
-            cout << "Client " << client.uid() << " connected to server" << endl;
-
+    /*/
+    myserver.run(10, [&](const auto&) { return 0; },
+        [&](const auto&, auto client) {
+            const auto pi = client.peer_info();
+            cout << "Client " << client << " connected to server" << endl;
             return 0;
         });
-
-    //} catch (const my::sockets::sock_exception& e) {
-    //  cerr << e.what() << endl;
-    // return e.errcode();
-    //}
-
+    /*/
+    ret = myserver.run(10);
     return ret;
 }
 int main() {

@@ -224,7 +224,7 @@ namespace sockets {
             port_t port() const { return m_port; }
             std::string_view host() const { return m_host; }
             address_family family() const { return this->m_family; }
-            operator struct addrinfo *() const { return m_addrinfo.get(); }
+            operator struct addrinfo*() const { return m_addrinfo.get(); }
 
             template <typename INT, typename... ARGS>
             std::string error_string(INT e, ARGS... args) {
@@ -267,7 +267,7 @@ namespace sockets {
                 m_addrinfo.reset(nullptr);
                 m_results.clear();
 
-                if constexpr (CLIENTORSERVER::is_server) {
+                if constexpr (TAG::is_server) {
                     if (host.empty()) host = "0.0.0.0";
                 }
 
@@ -406,9 +406,44 @@ namespace sockets {
             return ret;
         }
 
+        struct peer_info {
+            std::string ip;
+            port_t port{0};
+        };
+
+        peer_info get_peer_info(sockaddr& addr) {
+
+            peer_info pi;
+            char ipstr[INET6_ADDRSTRLEN] = {0};
+
+            // deal with both IPv4 and IPv6:
+            if (addr.sa_family == AF_INET) {
+                auto addrv4 = reinterpret_cast<sockaddr_in*>(&addr);
+                struct sockaddr_in* s = addrv4;
+                port_t prt{ntohs(s->sin_port)};
+                pi.port = prt;
+                inet_ntop(AF_INET, &s->sin_addr, &ipstr[0], sizeof ipstr);
+            } else { // AF_INET6
+                auto addrv6 = reinterpret_cast<sockaddr_in6*>(&addr);
+                struct sockaddr_in6* s = addrv6;
+                port_t port{ntohs(s->sin6_port)};
+                pi.port = port;
+                inet_ntop(AF_INET6, &s->sin6_addr, &ipstr[0], sizeof ipstr);
+            }
+
+            pi.ip = ipstr;
+            return pi;
+        }
+
+        template <typename OS = std::ostream, typename SERVER_CLIENT>
+        inline OS& operator<<(OS& os, const SERVER_CLIENT& sc) {
+            auto& pi = sc.peer_info();
+            os << pi.ip << ":" << pi.port.value << " [uid:" << sc.uid() << "]";
+            return os;
+        }
+
         // NOTE: NOT implicitly convertible to socket handle
         // for type safety reasons, use .handle().
-
         struct socket_t : my::no_copy<socket_t> {
 
             using fd_type = raw_socket_handle;
@@ -475,9 +510,12 @@ namespace sockets {
             void invalidate() { m_fd = invalid_fd; }
 
             protected:
-            void assign_handle(fd_type fd) {
+            void assign_handle(fd_type fd, blocking_type bt) {
                 assert(m_fd == invalid_fd);
                 m_fd = fd;
+                if (fd != invalid_sock_handle) {
+                    make_blocking(bt);
+                }
             }
         };
 
@@ -558,9 +596,9 @@ namespace sockets {
         }
 
         namespace raw_socket_helpers {
+            // why clang mistakes this as not being used, I have no idea!
+            [[maybe_unused]] static inline native_socket_type create_native_socket(
 
-            static inline native_socket_type create_native_socket(
-                blocking_type bt = blocking_type::non_blocking,
                 domains domain = domains::af_inet, types type = types::stream,
                 protocols protocol = protocols::Default) {
 
@@ -569,11 +607,11 @@ namespace sockets {
                     throw sock_exception(platform_error(),
                         " create_socket failed: ", platform_error_string());
                 }
-                // socket_t retval{sck, bt};
+
                 return sck;
             }
 
-            static inline socket_t create_socket(
+            [[maybe_unused]] static inline socket_t create_socket(
                 blocking_type bt = blocking_type::non_blocking,
                 domains domain = domains::af_inet, types type = types::stream,
                 protocols protocol = protocols::Default) {
@@ -636,7 +674,8 @@ aborted and any pending data is immediately discarded upon close(2).
         }
         // always closes socket, and does not throw so you can safely
         // use this in destructors.
-        inline static int close_socket(socket_t& sock, close_flags flags = close_flags{},
+        [[maybe_unused]] inline static int close_socket(socket_t& sock,
+            close_flags flags = close_flags{},
             shutdown_options opts = shutdown_options::shut_read_write,
             timeout_sec timeout_secs = timeout_sec{}) noexcept {
 
@@ -840,7 +879,7 @@ aborted and any pending data is immediately discarded upon close(2).
             }
         };
 #else
-        struct winsock_manager(){};
+        struct winsock_manager {}; // does nothing in unix
 #endif
 
     } // namespace detail
@@ -874,8 +913,11 @@ aborted and any pending data is immediately discarded upon close(2).
             blocking_type bt = blocking_type::non_blocking)
             : socket_t(), m_addrinfo{host, port} {
 
-            auto skt = detail::raw_socket_helpers::create_native_socket(bt);
-            socket_t::assign_handle(skt);
+            // This is done in the body here, rather than in the initalizer list
+            // because, for Windows, the winsock manager class needs to be constructed
+            // first (and we inherit from it)
+            auto skt = detail::raw_socket_helpers::create_native_socket();
+            socket_t::assign_handle(skt, bt);
             (void)timeout;
             puts("basic_socket constructor complete.");
         }
@@ -948,8 +990,8 @@ aborted and any pending data is immediately discarded upon close(2).
         // in the return type.
         io_return_type write(std::string_view data, timeout_sec timeout = {}) noexcept {
             io_return_type ret{};
-            int rv = detail::sock_send_string(
-                this->handle(), data, [this]() { return on_idle(); },
+            int rv = detail::sock_send_string(this->handle(), data,
+                [this]() { return on_idle(); },
                 [&](uint64_t elapsed_ms) {
                     if (elapsed_ms > timeout * 1000)
                         return -ETIMEDOUT;
@@ -1027,14 +1069,16 @@ aborted and any pending data is immediately discarded upon close(2).
         }
     };
 
+    using peer_info_t = detail::peer_info;
     // socket that is a "connectee" of some server socket:
     template <typename SERVER>
     class server_client_socket : public iosocket<SERVER, server_client_endpoint> {
 
-        const SERVER& m_server;
+        SERVER& m_server;
         uint32_t m_uid;
         using io_base = iosocket<SERVER, server_client_endpoint>;
-        struct sockaddr m_in_addr = {};
+
+        peer_info_t m_peer_info = {};
 
         public:
         //         iosocket(std::string_view host, port_t port, timeout_ms timeout =
@@ -1043,23 +1087,35 @@ aborted and any pending data is immediately discarded upon close(2).
 
         server_client_socket(SERVER& server, raw_socket_handle socket,
             struct sockaddr in_addr, uint32_t uid)
-            : io_base(socket), m_server(server), m_uid(uid), m_in_addr(in_addr) {
+            : io_base(socket)
+            , m_server(server)
+            , m_uid(uid)
+            , m_peer_info(detail::get_peer_info(in_addr)) {
 
-            // TODO: assign these!
-            (void)socket;
-            (void)in_addr;
+            assert(this->handle() == socket);
+            assert(!m_peer_info.ip.empty());
+            assert(m_peer_info.port.value > 0);
         }
-        ~server_client_socket() override = default;
+        ~server_client_socket() override { m_server.advise_client_gone(*this); }
+
+        const peer_info_t& peer_info() const { return this->m_peer_info; }
 
         uint32_t uid() const { return m_uid; }
     };
+
     template <typename CRTP>
     class server_socket : public iosocket<CRTP, server_endpoint> {
         using io_base = iosocket<CRTP, server_endpoint>;
         using ENDPOINT_TYPE = typename io_base::ENDPOINT_TYPE;
         std::thread::id m_tid;
+        //    template <typename SERVER>
+        // class server_client_socket : public iosocket<SERVER, server_client_endpoint>
 
         public:
+        using MYTYPE = server_socket<CRTP>;
+        using client_type = server_client_socket<MYTYPE>;
+        std::vector<client_type> m_vec_clients;
+
         server_socket(std::string_view host, port_t port, bool reuse_address = true,
             backlog_type backlog = backlog_type{})
             : io_base(host.empty() ? "0.0.0.0" : host, port, timeout_ms{})
@@ -1092,7 +1148,10 @@ aborted and any pending data is immediately discarded upon close(2).
 
             // throws if error
             int ret = detail::listen(*this);
-            if (ret == no_error) this->m_bactive = true;
+            if (ret == no_error)
+                this->m_bactive = true;
+            else
+                this->m_bactive = false;
             return ret;
         }
 
@@ -1105,6 +1164,19 @@ aborted and any pending data is immediately discarded upon close(2).
             const int ret = poll(
                 max_clients, std::forward<CB>(on_idle), std::forward<CB2>(on_new_client));
             return ret;
+        }
+
+        int run(unsigned int max_clients) {
+            m_tid = std::this_thread::get_id();
+            const int ret
+                = poll(max_clients, [&]() { return 0; }, [&](auto) { return 0; });
+            return ret;
+        }
+
+        void advise_client_gone(const client_type&) {
+            // remove him from your client list, or whatever ...
+            // NOTE: a multi-threaded server could call this on any old thread.
+            // So, if you have a client list, it should be thread safe.
         }
 
         protected:
@@ -1165,8 +1237,8 @@ aborted and any pending data is immediately discarded upon close(2).
         template <typename CB, typename CB2>
         int poll(int max_listeners, CB on_idle, CB2 on_new_client) {
 #ifdef _WIN32
-            return win32_poll_(max_listeners, 50, std::forward<CB&&>(on_idle),
-                std::forward<CB2&&>(on_new_client));
+            return win32_poll_(max_listeners, 50, std::forward<CB>(on_idle),
+                std::forward<CB2>(on_new_client));
 #else
             int retval = 0;
             auto efd = epoll_create1(0);
@@ -1175,13 +1247,12 @@ aborted and any pending data is immediately discarded upon close(2).
                 abort();
             }
             int sfd = this->handle();
-            int s = 0;
             struct epoll_event event {};
             struct epoll_event* events{nullptr};
 
             event.data.fd = sfd;
             event.events = EPOLLIN | EPOLLET;
-            s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
+            const auto s = epoll_ctl(efd, EPOLL_CTL_ADD, sfd, &event);
             if (s == -1) {
                 perror("epoll_ctl");
                 abort();
@@ -1189,73 +1260,35 @@ aborted and any pending data is immediately discarded upon close(2).
 
             /* Buffer where events are returned */
             events = (epoll_event*)calloc(max_listeners, sizeof event);
-            my::timing::stopwatch_t sw;
-            int wait_time = 5000;
-            int64_t prev_wait_time = wait_time;
 
-            unsigned int idle_count = 0;
-            auto last_idle_wait_ms = 0;
             /* The event loop */
             while (true) {
-
                 int n = 0;
-                idle_count++;
-                const auto iv = on_idle(*this);
+                const auto iv = on_idle();
                 if (iv < 0) {
                     std::cerr << "on_idle() reported an error: " << iv << " Dying."
                               << std::endl;
                     return iv;
                 }
-                int i = 0;
-                int64_t this_wait_time = wait_time;
-                float ten_percent = wait_time * 0.1f;
-                int iten_percent = static_cast<int>(ten_percent + 0.5f);
-                if (idle_count > 2) {
-                    if (abs(last_idle_wait_ms - wait_time) < iten_percent
-                        && prev_wait_time > 0) {
-                        this_wait_time = prev_wait_time;
 
-                    } else {
-                        // if (prev_wait_time <= 0) prev_wait_time = wait_time;
-                        int64_t adj = wait_time - last_idle_wait_ms;
-                        this_wait_time = prev_wait_time + adj;
-                        if (this_wait_time < 0) this_wait_time = 0;
-                        prev_wait_time = this_wait_time;
-                    }
-                    // cout << "adjusing sleep time to : " << this_wait_time << endl;
-                }
-                // cout << "Waiting for an event, or timeout ..." << endl;
-                this_wait_time = 60000;
+                const auto this_wait_time = 500;
                 do {
-                    n = epoll_wait(
-                        efd, events, max_listeners, static_cast<int>(this_wait_time));
+                    n = epoll_wait(efd, events, max_listeners, this_wait_time);
                 } while (n < 0 && errno == EINTR);
-                // usleep(3000000);
-                // cout << "epoll_wait returned: " << n << endl;
-                if (n < 0) {
-                    // std::cout << my::net::detail::platform_error_string(errno)
-                    //         << std::endl;
 
+                if (n < 0) {
                     if (n != ETIMEDOUT)
                         derived().on_info(my::strbuild(
                             "NOTE: epoll_wait returned ", n, platform_error_string()));
                 }
-                if (n == 0 && iv == 0) {
 
-                    last_idle_wait_ms = (int)sw.elapsed_ms().count();
-                    // std::cout << "idle path took: " << last_idle_wait_ms <<
-                    // std::endl;
-                    sw.reset();
-                } else {
-                    idle_count = 0;
-                }
-
+                int i = 0;
                 for (i = 0; i < n; i++) {
                     auto efd = events[i].data.fd;
                     if ((events[i].events & EPOLLERR) || (events[i].events & EPOLLHUP)
                         || (!(events[i].events & EPOLLIN))) {
                         /* An error has occured on this fd, or the socket is not
-                           ready for reading (why were we notified then?) */
+                           ready for reading. */
                         fprintf(stderr, "epoll error\n");
                         close(events[i].data.fd);
                         continue;
@@ -1267,7 +1300,6 @@ aborted and any pending data is immediately discarded upon close(2).
                         while (1) {
                             struct sockaddr in_addr {};
                             socklen_t in_len = sizeof(in_addr);
-                            my::sockets::detail::make_blocking(sfd, false);
                             raw_socket_handle s = ::accept(sfd, &in_addr, &in_len);
                             if (s != invalid_sock_handle) {
                                 if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
@@ -1276,40 +1308,14 @@ aborted and any pending data is immediately discarded upon close(2).
                                     break;
                                 }
                             }
-                            if (s == -1) {
-                                // std::cerr << "accept() returning -1" << std::endl;
-                                // abort();
-                                break;
-                            }
-
-                            // CTAD here: remembering server_client_socket comes
-                            // from a class template, templated on us.
-                            server_client_socket sc(*this, s, in_addr, uid_next());
-                            // ^^ blocking_type should be set there on the client,
-                            // obs non-blocking for single_threaded
-                            retval = on_new_client(*this, std::move(sc));
+                            retval = on_new_client(
+                                server_client_socket(*this, s, in_addr, uid_next()));
 
                             if (retval < 0) {
                                 goto done;
                             }
                         }
                         continue;
-                    } else {
-                        /* We have data on the fd waiting to be read. Read and
-                           display it. We must read whatever data is available
-                           completely, as we are running in edge-triggered mode
-                           and won't get a notification again for the same
-                           data. */
-                        int done = 1;
-
-                        if (done) {
-                            printf("Closed connection on descriptor %d\n",
-                                events[i].data.fd);
-
-                            /* Closing the descriptor will make epoll remove it
-                               from the set of descriptors which are monitored. */
-                            close(events[i].data.fd);
-                        }
                     }
                 }
             }
