@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.13.82, 2020-09-30T11:34:42. -->
+<!-- Written by QtCreator 4.13.82, 2020-10-01T07:54:11. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -587,7 +587,7 @@
     <value type="bool" key="RunConfiguration.UseQmlDebuggerAuto">true</value>
     <value type="bool" key="RunConfiguration.UseTerminal">false</value>
     <value type="QString" key="RunConfiguration.WorkingDirectory"></value>
-    <value type="QString" key="RunConfiguration.WorkingDirectory.default">/home/hp/Documents/VSCode/my_sockets/Creator/build-my_sockets-Desktop_clang-Debug</value>
+    <value type="QString" key="RunConfiguration.WorkingDirectory.default"></value>
    </valuemap>
    <value type="int" key="ProjectExplorer.Target.RunConfigurationCount">1</value>
   </valuemap>
