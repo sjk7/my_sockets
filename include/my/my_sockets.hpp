@@ -188,29 +188,32 @@ static inline void build_sock_options_map() {
     if (sock_options_map.empty()) {
         auto& m = sock_options_map;
         m[(int)sock_options::so_broadcast] = "SO_BROADCAST";
-        m[(int)sock_options::so_bsdcompar] = "SO_BSDCOMPAR";
         m[(int)sock_options::so_debug] = "SO_DEBUG";
         m[(int)sock_options::so_dontroute] = "SO_DONTROUTE";
         m[(int)sock_options::so_error] = "SO_ERROR";
         m[(int)sock_options::so_none] = "NONE";
         m[(int)sock_options::so_keepalive] = "SO_KEEPALIVE";
         m[(int)sock_options::so_linger] = "SO_LINGER";
-        m[(int)sock_options::so_no_check] = "SO_NO_CHECK";
         m[(int)sock_options::so_oobinline] = "SO_OOBINLINE";
-        m[(int)sock_options::so_passcred] = "SO_PASSCRED";
-        m[(int)sock_options::so_peercred] = "SO_PEERCRED";
-        m[(int)sock_options::so_priority] = "SO_PRIORITY";
         m[(int)sock_options::so_rcvlowlat] = "SO_RCVLOWLAT";
         m[(int)sock_options::so_rcvtimeeo] = "SO_RCVTIMEEO";
         m[(int)sock_options::so_recvbuf] = "SO_RECVBUF";
-        m[(int)sock_options::so_recvbufforce] = "SO_RECVBUFFFORCE";
         m[(int)sock_options::so_reuseaddr] = "SO_REUSEADDR";
-        m[(int)sock_options::so_reuseport] = "SO_REUSEPORT";
         m[(int)sock_options::so_sndbuf] = "SO_SNDBUF";
-        m[(int)sock_options::so_sndbuffforce] = "SO_SNDBUFFFORCE";
         m[(int)sock_options::so_sndlowlat] = "SO_SNDLOWLAT";
         m[(int)sock_options::so_sndtimeeo] = "SO_SNDTIMEEO";
         m[(int)sock_options::so_type] = "SO_TYPE";
+
+#ifdef __unix
+        m[(int)sock_options::so_priority] = "SO_PRIORITY";
+        m[(int)sock_options::so_recvbufforce] = "SO_RECVBUFFFORCE";
+        m[(int)sock_options::so_reuseport] = "SO_REUSEPORT";
+        m[(int)sock_options::so_sndbuffforce] = "SO_SNDBUFFFORCE";
+        m[(int)sock_options::so_passcred] = "SO_PASSCRED";
+        m[(int)sock_options::so_peercred] = "SO_PEERCRED";
+        m[(int)sock_options::so_bsdcompar] = "SO_BSDCOMPAR";
+        m[(int)sock_options::so_no_check] = "SO_NO_CHECK";
+#endif
     }
 }
 
@@ -307,7 +310,7 @@ namespace detail {
         [[nodiscard]] port_t port() const { return m_port; }
         [[nodiscard]] std::string_view host() const { return m_host; }
         [[nodiscard]] address_family family() const { return this->m_family; }
-        operator struct addrinfo*() const { return m_addrinfo.get(); }
+        operator struct addrinfo *() const { return m_addrinfo.get(); }
 
         template <typename INT, typename... ARGS>
         std::string error_string(INT e, ARGS... args) {
@@ -824,8 +827,13 @@ aborted and any pending data is immediately discarded upon close(2).
 
             if (ret == -1) {
                 int e = 0;
+#ifdef _WIN32
+#define CONN_SUCCESS WSAEISCONN
+#else
+#define CONN_SUCCESS EISCONN
+#endif
                 if (error_can_continue(e, true)) {
-                    if (e == EISCONN) {
+                    if (e == CONN_SUCCESS) {
                         ret = 0;
                         break;
                     }
@@ -841,8 +849,10 @@ aborted and any pending data is immediately discarded upon close(2).
         if (ret && sw.elapsed_ms().count() >= timeout.value) {
 #ifndef _WIN32
             errno = ETIMEDOUT;
+            ret = errno;
 #else
             WSASetLastError(WSAETIMEDOUT);
+            ret = WSAETIMEDOUT;
 #endif
         }
 
@@ -867,7 +877,6 @@ aborted and any pending data is immediately discarded upon close(2).
         memset(&buf[0], 0, BUFLEN);
         int e = 0;
         std::string_view empty_string_buf{};
-        my::timing::stopwatch_t sw;
         int tot_rec = 0;
 
         while (true) {
@@ -876,7 +885,7 @@ aborted and any pending data is immediately discarded upon close(2).
                 if (!error_can_continue(e)) {
                     return -e;
                 }
-                const int predret = pred(empty_string_buf, sw.elapsed_ms().count());
+                const int predret = pred(empty_string_buf);
                 if (predret) {
                     return predret;
                 }
@@ -884,8 +893,7 @@ aborted and any pending data is immediately discarded upon close(2).
             } else if (ret > 0) {
                 tot_rec += ret;
                 const auto sz = static_cast<std::string::size_type>(ret);
-                const int predret
-                    = pred(std::string_view{&buf[0], sz}, sw.elapsed_ms().count());
+                const int predret = pred(std::string_view{&buf[0], sz});
                 if (predret) return predret;
 
             } else {
@@ -1017,6 +1025,9 @@ class basic_socket : private detail::winsock_manager, public detail ::socket_t {
     std::string_view host() const { return m_addrinfo.host(); }
 
     port_t port() const { return m_addrinfo.port(); }
+    int close_gracefully(shutdown_options opts = shutdown_options::shut_read_write) {
+        return detail::close_socket(*this, close_flags{close_flags::graceful}, opts);
+    }
 
     // for a server, actively listening.
     // for a client: actually connected to server.
@@ -1067,6 +1078,8 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
 
     virtual int on_idle() noexcept {
         // single-threaded ought to pump some message loop here
+        std::this_thread::yield();
+        std::this_thread::sleep_for(1ms);
         return 0;
     }
 
@@ -1074,8 +1087,8 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
     // in the return type.
     io_return_type write(std::string_view data, timeout_sec timeout = {}) noexcept {
         io_return_type ret{};
-        int rv = detail::sock_send_string(this->handle(), data,
-            [this]() { return on_idle(); },
+        int rv = detail::sock_send_string(
+            this->handle(), data, [this]() { return on_idle(); },
             [&](uint64_t elapsed_ms) {
                 if (elapsed_ms > timeout * 1000)
                     return -ETIMEDOUT;
@@ -1094,18 +1107,38 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
     // or fails with reason in the return type.
     io_return_type read(std::string& data, timeout_sec timeout = {}) noexcept {
         io_return_type ret{};
-        int rv = detail::sock_read_until(
-            this->handle(), [&](std::string_view sdata, uint64_t elapsed_ms) {
+        my::timing::stopwatch_t sw;
+
+        int rv = detail::sock_read_until(this->handle(), [&](std::string_view sdata) {
+            auto& total = data;
+
+            if (!sdata.empty()) {
                 data.append(sdata);
-                if (elapsed_ms > timeout * 1000) return -ETIMEDOUT;
-                return 0;
-            });
+                int user_ret = do_data_arrived(data);
+                if (user_ret) return user_ret;
+
+            } else {
+                const auto oi = on_idle();
+                if (oi) {
+                    return oi;
+                }
+
+                if (sw.elapsed_ms().count() > timeout * 1000) {
+                    return ETIMEDOUT;
+                }
+            }
+
+            return 0;
+        });
         ret.return_value = rv;
         ret.errcode = -rv;
         return ret;
     }
 
+    virtual int data_arrived(std::string&) { return 0; }
+
     protected:
+    int do_data_arrived(std::string& data) { return data_arrived(data); }
 };
 
 template <typename CRTP>
@@ -1122,6 +1155,7 @@ class connecting_socket : public iosocket<CRTP, client_endpoint> {
     }
 
     virtual ~connecting_socket() = default;
+
     int connect(const timeout_ms timeout = timeout_ms{}) {
         my::timing::stopwatch_t sw;
 
@@ -1129,10 +1163,17 @@ class connecting_socket : public iosocket<CRTP, client_endpoint> {
             sw, this->handle(), this->m_addrinfo, this->is_blocking(), timeout);
         if (ret) {
             int e = ret;
+#ifdef _WIN32
+            if (e != WSAETIMEDOUT) e = platform_error();
+#define SOCKTIMEOUT WSAETIMEDOUT
+#else
+#define SOCKTIMEOUT ETIMEDOUT
             if (e != ETIMEDOUT) e = platform_error();
+#endif
 
             detail::close_socket(*this, close_flags{});
-            if (e == ETIMEDOUT) {
+            if (e == SOCKTIMEOUT) {
+
                 THROW_SOCK_EXCEPTION(e, "Connect to:", this->m_addrinfo.host(), ":",
                     this->m_addrinfo.port().value, my::newline, "TIMED OUT", "after",
                     sw.elapsed_ms().count(), "ms.");
@@ -1184,6 +1225,13 @@ class server_client_socket : public iosocket<SERVER, server_client_endpoint> {
     const peer_info_t& peer_info() const { return this->m_peer_info; }
 
     uint32_t uid() const { return m_uid; }
+    std::string m_data;
+
+    virtual int data_arrived(std::string& data) override {
+        m_data.append(data);
+        m_server.client_data_arrived(*this);
+        return 0;
+    }
 };
 
 template <typename CRTP> class server_socket : public iosocket<CRTP, server_endpoint> {
@@ -1252,6 +1300,12 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
         return no_error;
     }
 
+    // This method is just a stub. If you want to get informed when
+    // a server client has some data to read, simply add this method in your
+    // derived class. NOTE: it is not, and does not need to be, virtual.
+    int on_client_data(client_type&) { return 0; }
+    int client_data_arrived(client_type& c) { return crtp().on_client_data(c); }
+
     void advise_client_destroyed(const client_type& c) { crtp().on_client_destroyed(c); }
     int bind() { return detail::bind(*this); }
     static inline uint32_t uid_next() {
@@ -1300,15 +1354,15 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
 
                     } else {
 
-                        server_client_socket sc(*this, s, in_addr, uid_next());
                         // ^^ blocking_type should be set there on the client,
                         // obs non-blocking for single_threaded
-                        ret = on_new_client(*this, std::move(sc));
+                        ret = on_new_client(
+                            server_client_socket(*this, s, in_addr, uid_next()));
                         if (ret) return ret;
                     }
                 }
             } else {
-                ret = on_idle(*this);
+                ret = on_idle();
                 if (ret) return ret;
             }
         };
@@ -1371,8 +1425,8 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
 
     template <typename CB, typename CB2> int poll(CB on_idle, CB2 on_new_client) {
 #ifdef _WIN32
-        return win32_poll_(max_listeners, 50, std::forward<CB>(on_idle),
-            std::forward<CB2>(on_new_client));
+        return win32_poll_(
+            1, 50, std::forward<CB>(on_idle), std::forward<CB2>(on_new_client));
 #else
         int retval = 0;
         auto efd = epoll_create1(0);

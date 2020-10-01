@@ -10,6 +10,10 @@ using namespace std;
 
 int test_low_level() {
 
+#ifdef _WIN32
+    my::sockets::detail::winsock_manager man{};
+#endif
+
     auto test_sock = my::sockets::detail::raw_socket_helpers::create_socket();
     auto raw_sock = std::move(test_sock);
     assert(raw_sock.is_valid());
@@ -33,7 +37,11 @@ int test_low_level() {
         exceptions++;
     }
 
+#ifdef _WIN32
+    assert(exceptions == 0);
+#else
     assert(exceptions == 1);
+#endif
     // expecting this one to succeed:
     opts = my::sockets::sock_options{my::sockets::sock_options::so_reuseaddr};
     try {
@@ -44,7 +52,11 @@ int test_low_level() {
         cerr << e.what() << endl;
         exceptions++;
     }
+#ifdef _WIN32
+    assert(exceptions == 0);
+#else
     assert(exceptions == 1);
+#endif
     int val = 0;
     auto rv = my::sockets::detail::raw_socket_helpers::get_sock_opt(
         raw_sock.handle(), val, opts);
@@ -118,15 +130,47 @@ struct server : my::sockets::server_socket<server> {
         : server_base(host, port, reuse_address, backlog) {}
 
     void on_info(std::string_view info) { std::cerr << info << endl; }
-    int on_client_connected(client_type&&) {
+    int on_client_connected(client_type&& client) {
+
+        cout << client << " connected" << endl;
+        std::string d;
+        auto read_result = client.read(d);
+        assert(
+            read_result.errcode == WSAENOTSOCK); // because we closed it in on_client_data
+        static constexpr int quit_code = -77;
         static int ctr = 0;
         ctr++;
-        if (ctr > 10) {
-            return -77;
+        if (ctr > 5) {
+            return quit_code;
+        }
+        return my::sockets::no_error;
+    }
+    void on_client_destroyed(const client_type& c) { cout << c << " destroyed" << endl; }
+
+    static inline bool crudely_detect_html_request(std::string_view d) {
+        const std::string DNL = "\r\n\r\n"s;
+        const auto found = d.find(DNL);
+        if (found != std::string::npos) {
+            return found == d.length() - 4;
+        }
+        return false;
+    }
+
+    int on_client_data(client_type& c) {
+        auto& d = c.m_data;
+        auto reply = crudely_detect_html_request(d);
+        if (reply) {
+            const auto you_said = "You said\r\n"s;
+            auto wrote = c.write(you_said);
+            assert(wrote.errcode == 0);
+            wrote = c.write(d);
+            assert(wrote.errcode == 0);
+            auto close_result = c.close_gracefully();
+            assert(close_result == my::sockets::no_error);
+            return 1;
         }
         return 0;
     }
-    void on_client_destroyed(const client_type& c) { cout << c << " destroyed" << endl; }
 };
 
 int test_server(std::string_view local_ip, server::port_t port) {
@@ -156,19 +200,31 @@ int main() {
     int ret = 0;
     (void)ret;
 
+    ret = test_basic_socket("", port_t{80}, my::sockets::timeout_ms{2000});
+#ifdef _WIN32
+    assert(ret == WSAETIMEDOUT);
+#else
+    assert(ret == -2); // at least on linux, it is
+#endif
+
     test_low_level();
     ret = test_basic_socket("google.com", port_t{80});
     assert(ret == my::sockets::no_error);
 
-    ret = test_basic_socket("", port_t{80});
-    assert(ret == -2); // at least on linux, it is
-
     ret = test_basic_socket("some-non-existent-domain-name-no-tld", port_t{80});
+#ifndef _WIN32
     assert(ret == -2);
+#else
+    assert(ret == WSAHOST_NOT_FOUND);
+#endif
 
     ret = test_basic_socket("google.com", port_t{8000}, my::sockets::timeout_ms{1000});
-    assert(ret == ETIMEDOUT);
+#ifdef _WIN32
+    assert(ret == WSAETIMEDOUT);
+#else
+    assert(ret == -2); // at least on linux, it is
+#endif
 
     ret = test_server("", server::port_t{1234});
-    assert(ret == 0);
+    assert(ret == -77);
 }
