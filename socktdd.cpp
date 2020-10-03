@@ -135,8 +135,11 @@ struct server : my::sockets::server_socket<server> {
         cout << client << " connected" << endl;
         std::string d;
         auto read_result = client.read(d);
-        assert(
-            read_result.errcode == WSAENOTSOCK); // because we closed it in on_client_data
+        if (read_result.errcode) {
+            cerr << my::sockets::error_string(read_result.errcode) << endl;
+        }
+        assert(read_result.errcode
+            == my::sockets::error_not_sock); // because we closed it in on_client_data
         static constexpr int quit_code = -77;
         static int ctr = 0;
         ctr++;
@@ -218,12 +221,8 @@ int main() {
     assert(ret == WSAHOST_NOT_FOUND);
 #endif
 
-    ret = test_basic_socket("google.com", port_t{8000}, my::sockets::timeout_ms{1000});
-#ifdef _WIN32
+    ret = test_basic_socket("google.com", port_t{8000}, my::sockets::timeout_ms{500});
     assert(ret == my::sockets::error_codes::error_timedout);
-#else
-    assert(ret == -2); // at least on linux, it is
-#endif
 
     ret = test_server("", server::port_t{1234});
     assert(ret == -77);

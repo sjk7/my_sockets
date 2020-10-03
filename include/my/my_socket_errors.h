@@ -34,7 +34,7 @@ namespace sockets {
         error_timedout = WSAETIMEDOUT
 #else
 
-        error_not_sock = ENOTSOCK,
+        error_not_sock = EBADF,
         error_timedout = ETIMEDOUT
 
 #endif

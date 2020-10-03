@@ -311,7 +311,7 @@ namespace detail {
         [[nodiscard]] port_t port() const { return m_port; }
         [[nodiscard]] std::string_view host() const { return m_host; }
         [[nodiscard]] address_family family() const { return this->m_family; }
-        operator struct addrinfo *() const { return m_addrinfo.get(); }
+        operator struct addrinfo*() const { return m_addrinfo.get(); }
 
         template <typename INT, typename... ARGS>
         std::string error_string(INT e, ARGS... args) {
@@ -1089,8 +1089,8 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
     // in the return type.
     io_return_type write(std::string_view data, timeout_sec timeout = {}) noexcept {
         io_return_type ret{};
-        int rv = detail::sock_send_string(
-            this->handle(), data, [this]() { return on_idle(); },
+        int rv = detail::sock_send_string(this->handle(), data,
+            [this]() { return on_idle(); },
             [&](int64_t elapsed_ms) {
                 if (elapsed_ms > timeout * 1000)
                     return (int)sockets::error_codes::error_timedout;
@@ -1112,8 +1112,6 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
         my::timing::stopwatch_t sw;
 
         int rv = detail::sock_read_until(this->handle(), [&](std::string_view sdata) {
-            auto& total = data;
-
             if (!sdata.empty()) {
                 data.append(sdata);
                 int user_ret = do_data_arrived(data);
@@ -1466,9 +1464,8 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
                         "NOTE: epoll_wait returned ", n, platform_error_string()));
             }
 
-            if (process_events(on_new_client, events, n) < 0) {
-                goto done;
-            }
+            retval = process_events(on_new_client, events, n);
+            if (retval < 0) goto done;
         }
     done:
         if (events) free(events);
@@ -1476,6 +1473,6 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
         return retval;
 #endif
     }
-};
+}; // namespace my::sockets
 
 } // namespace my::sockets
