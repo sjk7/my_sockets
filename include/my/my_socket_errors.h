@@ -27,6 +27,18 @@ template <typename... ARGS> static inline std::string strbuild(ARGS... args) {
 }
 
 namespace sockets {
+
+    enum error_codes {
+#ifdef _WIN32
+        error_not_sock = WSAENOTSOCK,
+        error_timedout = WSAETIMEDOUT
+#else
+
+        error_not_sock = ENOTSOCK,
+        error_timedout = ETIMEDOUT
+
+#endif
+    };
     [[maybe_unused]] static inline void set_last_error(
         int err = 0, bool for_sockets = true) {
         if (for_sockets) {

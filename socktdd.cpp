@@ -202,7 +202,7 @@ int main() {
 
     ret = test_basic_socket("", port_t{80}, my::sockets::timeout_ms{2000});
 #ifdef _WIN32
-    assert(ret == WSAETIMEDOUT);
+    assert(ret == my::sockets::error_codes::error_timedout);
 #else
     assert(ret == -2); // at least on linux, it is
 #endif
@@ -220,7 +220,7 @@ int main() {
 
     ret = test_basic_socket("google.com", port_t{8000}, my::sockets::timeout_ms{1000});
 #ifdef _WIN32
-    assert(ret == WSAETIMEDOUT);
+    assert(ret == my::sockets::error_codes::error_timedout);
 #else
     assert(ret == -2); // at least on linux, it is
 #endif

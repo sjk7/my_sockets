@@ -106,10 +106,11 @@ struct timeout_ms {
     timeout_ms(const uint32_t t) : value(t) {}
 };
 struct timeout_sec {
-    static constexpr uint32_t thirty_secs = 30;
-    static constexpr uint32_t default_timeout = thirty_secs;
-    uint32_t value = {default_timeout};
-    operator uint32_t() const noexcept { return value; }
+    using type = int64_t;
+    static constexpr type thirty_secs = 30;
+    static constexpr type default_timeout = thirty_secs;
+    type value = {default_timeout};
+    operator type() const noexcept { return value; }
     timeout_sec() : value(default_timeout){};
 };
 
@@ -734,7 +735,7 @@ aborted and any pending data is immediately discarded upon close(2).
         else
             l.l_onoff = 0;
 
-        l.l_linger = linger_secs.value;
+        l.l_linger = (uint32_t)linger_secs.value;
         return raw_socket_helpers::set_sock_opt(sock.handle(), l,
             my::sockets::sock_options{my::sockets::sock_options::so_linger});
     }
@@ -847,12 +848,13 @@ aborted and any pending data is immediately discarded upon close(2).
         }
 
         if (ret && sw.elapsed_ms().count() >= timeout.value) {
+
 #ifndef _WIN32
-            errno = ETIMEDOUT;
+            errno = sockets::error_codes::error_timedout;
             ret = errno;
 #else
-            WSASetLastError(WSAETIMEDOUT);
-            ret = WSAETIMEDOUT;
+            WSASetLastError(sockets::error_codes::error_timedout);
+            ret = sockets::error_codes::error_timedout;
 #endif
         }
 
@@ -1089,9 +1091,9 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
         io_return_type ret{};
         int rv = detail::sock_send_string(
             this->handle(), data, [this]() { return on_idle(); },
-            [&](uint64_t elapsed_ms) {
+            [&](int64_t elapsed_ms) {
                 if (elapsed_ms > timeout * 1000)
-                    return -ETIMEDOUT;
+                    return (int)sockets::error_codes::error_timedout;
                 else
                     return no_error;
             });
@@ -1124,7 +1126,7 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
                 }
 
                 if (sw.elapsed_ms().count() > timeout * 1000) {
-                    return ETIMEDOUT;
+                    return (int)sockets::error_codes::error_timedout;
                 }
             }
 
@@ -1163,16 +1165,11 @@ class connecting_socket : public iosocket<CRTP, client_endpoint> {
             sw, this->handle(), this->m_addrinfo, this->is_blocking(), timeout);
         if (ret) {
             int e = ret;
-#ifdef _WIN32
-            if (e != WSAETIMEDOUT) e = platform_error();
-#define SOCKTIMEOUT WSAETIMEDOUT
-#else
-#define SOCKTIMEOUT ETIMEDOUT
-            if (e != ETIMEDOUT) e = platform_error();
-#endif
+
+            if (e != sockets::error_codes::error_timedout) e = platform_error();
 
             detail::close_socket(*this, close_flags{});
-            if (e == SOCKTIMEOUT) {
+            if (e == sockets::error_codes::error_timedout) {
 
                 THROW_SOCK_EXCEPTION(e, "Connect to:", this->m_addrinfo.host(), ":",
                     this->m_addrinfo.port().value, my::newline, "TIMED OUT", "after",
