@@ -1,0 +1,1 @@
+/usr/bin/clang++-10  -g  -rdynamic CMakeFiles/my_sockets_tdd.dir/msg_server.cpp.o  -o my_sockets_tdd 
