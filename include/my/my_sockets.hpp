@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cassert>
 #include <atomic>
+#include <algorithm>
 #include "my_socket_errors.h"
 #include "my_sockets_utils.h"
 #include <memory> // unique_ptr
@@ -464,7 +465,7 @@ namespace detail {
     };
     template <typename socket> inline static int destroy_socket(socket&) noexcept;
 
-    int make_blocking(const int socket, bool is_blocking) {
+    static inline int make_blocking(const int socket, bool is_blocking) {
         int ret = 0;
 
 #ifndef __unix
@@ -498,7 +499,7 @@ namespace detail {
         port_t port{0};
     };
 
-    peer_info get_peer_info(sockaddr& addr) {
+    [[maybe_unused]] static inline peer_info get_peer_info(sockaddr& addr) {
 
         peer_info pi;
         char ipstr[INET6_ADDRSTRLEN] = {0};
@@ -572,8 +573,10 @@ namespace detail {
             assert(m_fd != 1);
             return ret;
         }
-        bool is_blocking() const { return (m_blocking == blocking_type::blocking); }
-
+        bool is_blocking() const noexcept {
+            return (m_blocking == blocking_type::blocking);
+        }
+        blocking_type blocking_mode() const noexcept { return m_blocking; }
         inline friend bool operator==(const socket_t& rhs, const socket_t& lhs) {
             return rhs.m_fd == lhs.m_fd;
         }
@@ -598,7 +601,7 @@ namespace detail {
 
         protected:
         void assign_handle(fd_type fd, blocking_type bt) {
-            assert(m_fd == invalid_fd);
+            // assert(m_fd == invalid_fd);
             m_fd = fd;
             if (fd != invalid_sock_handle) {
                 make_blocking(bt);
@@ -1016,8 +1019,21 @@ class basic_socket : private detail::winsock_manager, public detail ::socket_t {
     }
 
     // server_client constructor
-    [[maybe_unused]] basic_socket(sockets::native_socket_type s) : socket_t(s) {
+    [[maybe_unused]] basic_socket(sockets::native_socket_type s, blocking_type bt)
+        : socket_t(s, bt) {
         puts("server client constructor complete");
+    }
+
+    inline friend void swap(basic_socket& lhs, basic_socket& rhs) {
+        using std::swap;
+        swap(rhs.m_bactive, lhs.m_bactive);
+        swap(rhs.m_addrinfo, lhs.m_addrinfo);
+    }
+    basic_socket(basic_socket&& rhs) : socket_t(std::move(rhs)) { swap(*this, rhs); }
+
+    basic_socket& operator=(basic_socket&& rhs) {
+        swap(*this, rhs);
+        return *this;
     }
 
     ~basic_socket() override { puts("basic_socket destructor"); }
@@ -1071,10 +1087,18 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
         timeout_ms timeout = timeout_ms{}, blocking_type bt = blocking_type::non_blocking)
         : iobase_t(host, port, timeout, bt) {}
 
-    [[maybe_unused]] iosocket(sockets::native_socket_type s) : iobase_t(s) {
+    [[maybe_unused]] iosocket(
+        sockets::native_socket_type s, blocking_type bt = blocking_type::non_blocking)
+        : iobase_t(s, bt) {
         puts("server client constructor complete");
     }
     ~iosocket() override = default;
+
+    iosocket(iosocket&& rhs) : iobase_t(std::move(rhs)) {}
+    iosocket& operator=(iosocket&& rhs) {
+        assert(0);
+        return *this;
+    }
 
     [[maybe_unused]] CRTP& derived() { return static_cast<CRTP&>(*this); }
 
@@ -1199,6 +1223,12 @@ class server_client_socket : public iosocket<SERVER, server_client_endpoint> {
 
     peer_info_t m_peer_info = {};
 
+    server_client_socket& swap(server_client_socket&& rhs) {
+        using std::swap;
+        swap(m_server, rhs.m_server);
+        return *this;
+    }
+
     public:
     //         iosocket(std::string_view host, port_t port, timeout_ms timeout =
     //         timeout_ms{},
@@ -1216,7 +1246,13 @@ class server_client_socket : public iosocket<SERVER, server_client_endpoint> {
         assert(m_peer_info.port.value > 0);
     }
     ~server_client_socket() override { m_server.advise_client_destroyed(*this); }
+    server_client_socket(server_client_socket&& rhs)
+        : io_base(std::move(rhs)), m_server(rhs.m_server) {}
 
+    server_client_socket& operator=(server_client_socket&& rhs) {
+        swap(std::move(rhs));
+        return *this;
+    }
     const peer_info_t& peer_info() const { return this->m_peer_info; }
 
     uint32_t uid() const { return m_uid; }
@@ -1241,7 +1277,7 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
     using client_type = server_client_socket<MYTYPE>;
     using client_uid_type = uint32_t;
     friend class server_client_socket<MYTYPE>;
-    std::unordered_map<client_uid_type, client_type> m_clients;
+    std::vector<client_type> m_clients;
 
     server_socket(std::string_view host, port_t port, bool reuse_address = true,
         backlog_type backlog = backlog_type{})
@@ -1285,12 +1321,25 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
     int run() {
         m_tid = std::this_thread::get_id();
         const int ret = poll([&]() { return 0; },
-            [&](auto&& c) { return crtp().on_client_connected(std::move(c)); });
+            [&](auto c) { return my_on_client_connected(std::move(c)); });
         return ret;
     }
 
+    private:
+    int my_on_client_connected(client_type c) {
+        auto& refc = m_clients.emplace_back(std::move(c));
+        return crtp().on_client_connected(refc);
+    }
+
+    void remove_client(const client_type& c) {
+        auto& v = m_clients;
+        v.erase(std::remove_if(v.begin(), v.end(),
+                    [&](const auto& cli) { return cli.uid() == c.uid(); }),
+            v.end());
+    }
+
     protected:
-    int on_client_connected(client_type&& c) {
+    int on_client_connected(client_type c) {
         std::cout << "client connected: " << c << std::endl;
         return no_error;
     }
@@ -1301,7 +1350,11 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
     int on_client_data(client_type&) { return 0; }
     int client_data_arrived(client_type& c) { return crtp().on_client_data(c); }
 
-    void advise_client_destroyed(const client_type& c) { crtp().on_client_destroyed(c); }
+    void advise_client_destroyed(const client_type& c) {
+        if (crtp().on_client_destroyed(c) == 0) {
+            remove_client(c);
+        }
+    }
     int bind() { return detail::bind(*this); }
     static inline uint32_t uid_next() {
         static uint32_t u;

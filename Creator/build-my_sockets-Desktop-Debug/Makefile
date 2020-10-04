@@ -52,8 +52,8 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../../socktdd.cpp 
-OBJECTS       = socktdd.o
+SOURCES       = ../../msg_server.cpp 
+OBJECTS       = msg_server.o
 DIST          = /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/common/unix.conf \
 		/home/hp/QtLatest/5.12.2/gcc_64/mkspecs/common/linux.conf \
@@ -243,7 +243,7 @@ DIST          = /home/hp/QtLatest/5.12.2/gcc_64/mkspecs/features/spec_pre.prf \
 		../my_sockets/my_sockets.pro ../../include/my/my_linux_sockets_includes.hpp \
 		../../include/my/my_socket_errors.h \
 		../../include/my/my_sockets.hpp \
-		../../include/my/my_sockets_utils.h ../../socktdd.cpp
+		../../include/my/my_sockets_utils.h ../../msg_server.cpp
 QMAKE_TARGET  = my_sockets
 DESTDIR       = 
 TARGET        = my_sockets
@@ -673,11 +673,11 @@ compiler_clean:
 
 ####### Compile
 
-socktdd.o: ../../socktdd.cpp ../../include/my/my_sockets.hpp \
+msg_server.o: ../../msg_server.cpp ../../include/my/my_sockets.hpp \
 		../../include/my/my_socket_errors.h \
 		../../include/my/my_sockets_utils.h \
 		../../include/my/my_linux_sockets_includes.hpp
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o socktdd.o ../../socktdd.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o msg_server.o ../../msg_server.cpp
 
 ####### Install
 
