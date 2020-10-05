@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="Linux-clang++-10"
+	BuildStamp="20201004-1046-Experimental"
+	Name="ria-zoo"
+	Generator="ctest-3.10.2"
+	CompilerName="/usr/bin/clang++-10"
+	CompilerVersion="10.0.0"
+	OSName="Linux"
+	Hostname="ria-zoo"
+	OSRelease="4.15.0-118-generic"
+	OSVersion="#119-Ubuntu SMP Tue Sep 8 12:30:01 UTC 2020"
+	OSPlatform="x86_64"
+	Is64Bits="1"
+	VendorString="AuthenticAMD"
+	VendorID="Advanced Micro Devices"
+	FamilyID="21"
+	ModelID="19"
+	ProcessorCacheSize="1024"
+	NumberOfLogicalCPU="2"
+	NumberOfPhysicalCPU="1"
+	TotalVirtualMemory="18485"
+	TotalPhysicalMemory="7163"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="3693.22"
+	>
+	<Testing>
+		<StartDateTime>Oct 04 11:46 BST</StartDateTime>
+		<StartTestTime>1601808414</StartTestTime>
+		<TestList/>
+		<EndDateTime>Oct 04 11:46 BST</EndDateTime>
+		<EndTestTime>1601808414</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

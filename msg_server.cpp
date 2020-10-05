@@ -23,11 +23,6 @@ struct server : my::sockets::server_socket<server> {
         cout << c << " connected" << endl;
         std::string d;
         auto read_result = c.read(d);
-        if (read_result.errcode) {
-            cerr << my::sockets::error_string(read_result.errcode) << endl;
-            c.close_gracefully();
-            // remove_client(c.uid());
-        }
         assert(read_result.errcode
             == my::sockets::error_not_sock); // because we closed it in on_client_data
         static constexpr int quit_code = -77;
@@ -61,8 +56,7 @@ struct server : my::sockets::server_socket<server> {
             assert(wrote.errcode == 0);
             wrote = c.write(d);
             assert(wrote.errcode == 0);
-            auto close_result = c.close_gracefully();
-            assert(close_result == my::sockets::no_error);
+            c.destroy();
             return 1;
         }
         return 0;
@@ -75,6 +69,7 @@ int main() {
     server::port_t port{7000};
     try {
         server serv("", port);
+        cout << "Server listening on ip: " << serv.host() << ":" << port.value << endl;
         serv.run();
 
     } catch (const sock_exception& e) {

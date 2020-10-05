@@ -526,7 +526,9 @@ namespace detail {
     template <typename OS = std::ostream, typename SERVER_CLIENT>
     inline OS& operator<<(OS& os, const SERVER_CLIENT& sc) {
         auto& pi = sc.peer_info();
-        os << pi.ip << ":" << pi.port.value << " [uid:" << sc.uid() << "]";
+        os << pi.ip;
+        os << ":" << pi.port.value;
+        os << " [uid:" << sc.uid() << "]";
         return os;
     }
 
@@ -1094,11 +1096,11 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
     }
     ~iosocket() override = default;
 
-    iosocket(iosocket&& rhs) : iobase_t(std::move(rhs)) {}
-    iosocket& operator=(iosocket&& rhs) {
-        assert(0);
-        return *this;
+    iosocket(iosocket&& rhs) : iobase_t(std::move(rhs)) {
+        puts("iosocket move constructor");
+
     }
+    iosocket& operator=(iosocket&&) = default;
 
     [[maybe_unused]] CRTP& derived() { return static_cast<CRTP&>(*this); }
 
@@ -1147,7 +1149,7 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
                     return oi;
                 }
 
-                if (sw.elapsed_ms().count() > timeout * 1000) {
+                if (sw.elapsed_ms().count() > timeout * 1000000) {
                     return (int)sockets::error_codes::error_timedout;
                 }
             }
@@ -1218,7 +1220,7 @@ template <typename SERVER>
 class server_client_socket : public iosocket<SERVER, server_client_endpoint> {
 
     SERVER& m_server;
-    uint32_t m_uid;
+    uint32_t m_uid = 0;
     using io_base = iosocket<SERVER, server_client_endpoint>;
 
     peer_info_t m_peer_info = {};
@@ -1226,6 +1228,8 @@ class server_client_socket : public iosocket<SERVER, server_client_endpoint> {
     server_client_socket& swap(server_client_socket&& rhs) {
         using std::swap;
         swap(m_server, rhs.m_server);
+        swap(m_peer_info, rhs.m_peer_info);
+        swap(m_uid, rhs.m_uid);
         return *this;
     }
 
@@ -1245,13 +1249,23 @@ class server_client_socket : public iosocket<SERVER, server_client_endpoint> {
         assert(!m_peer_info.ip.empty());
         assert(m_peer_info.port.value > 0);
     }
-    ~server_client_socket() override { m_server.advise_client_destroyed(*this); }
+    virtual ~server_client_socket() override {
+        puts("server client destroyed");
+    }
+
+    void destroy(){
+        this->close_gracefully(shutdown_options{shutdown_options::shut_read_write});
+        m_server.advise_client_destroyed(*this);
+        puts("client destroyed here?");
+    }
     server_client_socket(server_client_socket&& rhs)
-        : io_base(std::move(rhs)), m_server(rhs.m_server) {}
+        : io_base(std::move(rhs)), m_server(rhs.m_server) {
+
+            swap(std::move(rhs));
+        }
 
     server_client_socket& operator=(server_client_socket&& rhs) {
-        swap(std::move(rhs));
-        return *this;
+        return swap(std::move(rhs));
     }
     const peer_info_t& peer_info() const { return this->m_peer_info; }
 
@@ -1331,11 +1345,27 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
         return crtp().on_client_connected(refc);
     }
 
+    template<class ForwardIt, class UnaryPredicate>
+    ForwardIt remove_one_if(ForwardIt first, ForwardIt last, UnaryPredicate p)
+    {
+        first = std::find_if(first, last, p);
+        if (first != last)
+            for(ForwardIt i = first; ++i != last; )
+                if (!p(*i))
+                    *first++ = std::move(*i);
+        return first;
+    }
     void remove_client(const client_type& c) {
         auto& v = m_clients;
-        v.erase(std::remove_if(v.begin(), v.end(),
-                    [&](const auto& cli) { return cli.uid() == c.uid(); }),
+        auto count = v.size();
+        v.erase(remove_one_if(v.begin(), v.end(),
+                    [&](const auto& cli) {
+            const auto ret = cli.uid() == c.uid();
+            return ret;
+        }),
             v.end());
+
+        assert(v.size() == count -1); // my remove_one_if is ok?>
     }
 
     protected:
@@ -1357,8 +1387,8 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
     }
     int bind() { return detail::bind(*this); }
     static inline uint32_t uid_next() {
-        static uint32_t u;
-        return u++;
+        static uint32_t u = 0;
+        return ++u;
     }
     void prepare_listen(const backlog_type& backlog, bool reuse_address) {
         m_backlog = backlog;
