@@ -12,4 +12,5 @@ HEADERS += \
     ../../include/my/my_linux_sockets_includes.hpp \
     ../../include/my/my_socket_errors.h \
     ../../include/my/my_sockets.hpp \
+    ../../include/my/my_sockets_threaded.hpp \
     ../../include/my/my_sockets_utils.h

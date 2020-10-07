@@ -29,6 +29,9 @@
 #endif
 
 namespace my::sockets {
+
+constexpr const char* NL = "\r\n";
+constexpr const char* DNL = "\r\n\r\n";
 #ifdef __linux
 using raw_socket_handle = int;
 #else
@@ -1017,7 +1020,7 @@ class basic_socket : private detail::winsock_manager, public detail ::socket_t {
         auto skt = detail::raw_socket_helpers::create_native_socket();
         socket_t::assign_handle(skt, bt);
         (void)timeout;
-        puts("basic_socket constructor complete.");
+        // puts("basic_socket constructor complete.");
     }
 
     // server_client constructor
@@ -1038,13 +1041,13 @@ class basic_socket : private detail::winsock_manager, public detail ::socket_t {
         return *this;
     }
 
-    ~basic_socket() override { puts("basic_socket destructor"); }
-    const addrinfo* get_addrinfo() const { return m_addrinfo; }
-    auto family() const { return m_addrinfo.family(); }
+    virtual ~basic_socket() noexcept override {} // puts("basic_socket destructor"); }
+    const addrinfo* get_addrinfo() const noexcept { return m_addrinfo; }
+    auto family() const noexcept { return m_addrinfo.family(); }
 
-    std::string_view host() const { return m_addrinfo.host(); }
+    std::string_view host() const noexcept { return m_addrinfo.host(); }
 
-    port_t port() const { return m_addrinfo.port(); }
+    port_t port() const noexcept { return m_addrinfo.port(); }
     int close_gracefully(shutdown_options opts = shutdown_options::shut_read_write) {
         return detail::close_socket(*this, close_flags{close_flags::graceful}, opts);
     }
@@ -1097,8 +1100,7 @@ class iosocket : public basic_socket<ENDPOINT_TYPE> {
     ~iosocket() override = default;
 
     iosocket(iosocket&& rhs) : iobase_t(std::move(rhs)) {
-        puts("iosocket move constructor");
-
+        // puts("iosocket move constructor");
     }
     iosocket& operator=(iosocket&&) = default;
 
@@ -1249,20 +1251,18 @@ class server_client_socket : public iosocket<SERVER, server_client_endpoint> {
         assert(!m_peer_info.ip.empty());
         assert(m_peer_info.port.value > 0);
     }
-    virtual ~server_client_socket() override {
-        puts("server client destroyed");
-    }
+    virtual ~server_client_socket() override { puts("server client destroyed"); }
 
-    void destroy(){
+    native_socket_type destroy() {
+        native_socket_type old_handle = this->handle();
         this->close_gracefully(shutdown_options{shutdown_options::shut_read_write});
-        m_server.advise_client_destroyed(*this);
-        puts("client destroyed here?");
+        m_server.advise_client_destroyed(*this, old_handle);
+        return old_handle;
     }
     server_client_socket(server_client_socket&& rhs)
         : io_base(std::move(rhs)), m_server(rhs.m_server) {
-
-            swap(std::move(rhs));
-        }
+        swap(std::move(rhs));
+    }
 
     server_client_socket& operator=(server_client_socket&& rhs) {
         return swap(std::move(rhs));
@@ -1280,6 +1280,7 @@ class server_client_socket : public iosocket<SERVER, server_client_endpoint> {
 };
 
 template <typename CRTP> class server_socket : public iosocket<CRTP, server_endpoint> {
+    protected:
     using io_base = iosocket<CRTP, server_endpoint>;
     using ENDPOINT_TYPE = typename io_base::ENDPOINT_TYPE;
     std::thread::id m_tid;
@@ -1334,56 +1335,44 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
 
     int run() {
         m_tid = std::this_thread::get_id();
-        const int ret = poll([&]() { return 0; },
-            [&](auto c) { return my_on_client_connected(std::move(c)); });
+        const int ret = poll(
+            [&]() { return 0; }, [&](auto c) { return client_accepted(std::move(c)); });
         return ret;
     }
 
     private:
-    int my_on_client_connected(client_type c) {
-        auto& refc = m_clients.emplace_back(std::move(c));
-        return crtp().on_client_connected(refc);
+    protected:
+    virtual bool can_accept_client(client_type&) noexcept { return true; }
+    virtual int client_has_connected(client_type&) { return no_error; }
+    // called directly from poll()ing
+    virtual int client_accepted(client_type c) {
+        auto& refc = add_client(std::move(c));
+        // client stays in scope coz added to client collection
+        return client_has_connected(refc);
+    }
+    virtual client_type& add_client(client_type c) {
+
+        return m_clients.emplace_back(std::move(c));
     }
 
-    template<class ForwardIt, class UnaryPredicate>
-    ForwardIt remove_one_if(ForwardIt first, ForwardIt last, UnaryPredicate p)
-    {
-        first = std::find_if(first, last, p);
-        if (first != last)
-            for(ForwardIt i = first; ++i != last; )
-                if (!p(*i))
-                    *first++ = std::move(*i);
-        return first;
-    }
-    void remove_client(const client_type& c) {
+    virtual void remove_client(const client_type& c, native_socket_type) {
         auto& v = m_clients;
         auto count = v.size();
-        v.erase(remove_one_if(v.begin(), v.end(),
-                    [&](const auto& cli) {
-            const auto ret = cli.uid() == c.uid();
-            return ret;
-        }),
-            v.end());
+        auto found = std::find_if(
+            v.begin(), v.end(), [&](const auto& cli) { return cli.uid() == c.uid(); });
+        if (found != v.end()) v.erase(found);
 
-        assert(v.size() == count -1); // my remove_one_if is ok?>
-    }
-
-    protected:
-    int on_client_connected(client_type c) {
-        std::cout << "client connected: " << c << std::endl;
-        return no_error;
+        assert(v.size() == count - 1);
     }
 
     // This method is just a stub. If you want to get informed when
     // a server client has some data to read, simply add this method in your
     // derived class. NOTE: it is not, and does not need to be, virtual.
-    int on_client_data(client_type&) { return 0; }
-    int client_data_arrived(client_type& c) { return crtp().on_client_data(c); }
+    int data_arrived(client_type&) { return 0; }
+    int client_data_arrived(client_type& c) { return crtp().data_arrived(c); }
 
-    void advise_client_destroyed(const client_type& c) {
-        if (crtp().on_client_destroyed(c) == 0) {
-            remove_client(c);
-        }
+    virtual void advise_client_destroyed(client_type& c, native_socket_type old) {
+        remove_client(c, old);
     }
     int bind() { return detail::bind(*this); }
     static inline uint32_t uid_next() {
@@ -1556,6 +1545,71 @@ template <typename CRTP> class server_socket : public iosocket<CRTP, server_endp
         return retval;
 #endif
     }
-}; // namespace my::sockets
+}; // server_socket
+
+[[maybe_unused]] static inline bool crudely_detect_html_request(std::string_view d) {
+
+    const auto found = d.find(DNL);
+    if (found != std::string::npos) {
+        return found == d.length() - 4;
+    }
+    return false;
+}
+
+// a server that manages client connections, and echoes what the client says
+// back to the client.
+template <typename CRTP>
+struct basic_server : my::sockets::server_socket<basic_server<CRTP>> {
+    using base = typename my::sockets::server_socket<basic_server<CRTP>>;
+    using server_base = my::sockets::server_socket<basic_server<CRTP>>;
+    using port_t = my::sockets::port_t;
+    using backlog_type = my::sockets::backlog_type;
+    using client_type = typename server_base::client_type;
+
+    basic_server(std::string_view host, port_t port, bool reuse_address = true,
+        backlog_type backlog = backlog_type{})
+        : server_base(host, port, reuse_address, backlog) {}
+    virtual ~basic_server() {}
+
+    CRTP& crtp() { return static_cast<CRTP&>(*this); }
+
+    void on_info(std::string_view sv) { crtp().have_info(sv); }
+    void have_info(std::string_view) {}
+
+    int on_client_connected(client_type c) {
+
+        auto ret = crtp().client_has_connected(std::move(c));
+        if (ret != 0) {
+            return ret;
+        }
+        std::string d;
+        auto read_result = c.read(d);
+        assert(read_result.errcode
+            == my::sockets::error_not_sock); // because we closed it in on_client_data
+        static constexpr int quit_code = -77;
+        static int ctr = 0;
+        ctr++;
+        if (ctr > 5) {
+            return quit_code;
+        }
+        return my::sockets::no_error;
+    }
+    virtual int on_client_destroyed(const client_type&) { return 0; }
+
+    int on_client_data(client_type& c) {
+        auto& d = c.m_data;
+        auto reply = crudely_detect_html_request(d);
+        if (reply) {
+            const auto you_said = "You said\r\n";
+            auto wrote = c.write(you_said);
+            assert(wrote.errcode == 0);
+            wrote = c.write(d);
+            assert(wrote.errcode == 0);
+            c.destroy();
+            return 1;
+        }
+        return 0;
+    }
+};
 
 } // namespace my::sockets
