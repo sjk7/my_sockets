@@ -26,6 +26,15 @@ int main() {
     cout << "--------------------" << endl;
 
     try {
+        test_server_t<my::sockets::multi_thread_policy<>> serv("", port);
+        cout << "Server listening on ip: " << serv.host() << ":" << port.value << endl;
+        serv.run();
+
+    } catch (const sock_exception& e) {
+        cerr << e.what() << endl;
+    }
+
+    try {
         test_server_t<my::sockets::single_thread_policy<>> serv("", port);
         cout << "Server listening on ip: " << serv.host() << ":" << port.value << endl;
         serv.run();

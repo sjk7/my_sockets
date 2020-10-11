@@ -14,3 +14,5 @@ HEADERS += \
     ../../include/my/my_sockets.hpp \
     ../../include/my/my_sockets_threaded.hpp \
     ../../include/my/my_sockets_utils.h
+
+unix: LIBS += -lpthread
